@@ -1,5 +1,30 @@
 {
-  "generatedAt": null,
-  "overall": "unknown",
-  "targets": {}
+  "generatedAt": "2026-09-09T17:48:13.878Z",
+  "overall": "degraded",
+  "targets": {
+    "admin": {
+      "label": "Administrasjon",
+      "detail": "Innlogging, provisjonering og fakturering",
+      "state": "degraded",
+      "misses": 1,
+      "since": "2026-09-09T17:48:13.878Z",
+      "lastOk": null,
+      "lastCheck": "2026-09-09T17:48:13.878Z",
+      "responseMs": 470,
+      "reason": "Admin-session mangler eller er utløpt.",
+      "incidentFrom": null
+    },
+    "demo": {
+      "label": "Kundepod",
+      "detail": "Representativ kundeinstallasjon (demo)",
+      "state": "degraded",
+      "misses": 1,
+      "since": "2026-09-09T17:48:13.878Z",
+      "lastOk": null,
+      "lastCheck": "2026-09-09T17:48:13.878Z",
+      "responseMs": 570,
+      "reason": "HTTP 404",
+      "incidentFrom": null
+    }
+  }
 }
