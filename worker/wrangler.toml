@@ -1,0 +1,28 @@
+# Ko | Do · Vault — D-149 — vakten
+#
+# Cloudflare fordi GitHub Actions' cron aldri fyrte: to timer, ~24 tapte
+# slots, null planlagte kjøringer. GitHubs egen dokumentasjon kaller det
+# «best effort» og sier at køede jobber kan droppes. Cloudflares cron er en
+# ekte planlegger — og vi har allerede databehandleravtale og TIA der.
+
+name = "kodo-vakt"
+main = "src/index.mjs"
+compatibility_date = "2026-09-09"
+
+# AbortSignal.timeout og moderne standard-API-er.
+compatibility_flags = ["nodejs_compat"]
+
+[triggers]
+# Hvert 5. minutt. Gratisnivået gir 5 cron-triggere per konto; vi bruker én.
+crons = ["*/5 * * * *"]
+
+[observability]
+enabled = true
+
+# Hemmeligheter settes med `wrangler secret put <navn>`, ALDRI i denne fila:
+#   INTERNAL_RPC_SECRET  — samme verdi som i Vercel. Bearer mot helse-endepunktene.
+#   GITHUB_TOKEN         — fine-grained PAT, Contents: read+write, KUN kodo-status.
+#   TELEGRAM_BOT_TOKEN   — samme bot som resten av varslingen.
+#   TELEGRAM_CHAT_ID     — samme chat.
+#   TRIGGER_SECRET       — beskytter den manuelle /-ruten. Valgfri, men uten den
+#                          svarer manuell kjøring alltid 401.

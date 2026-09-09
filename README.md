@@ -14,6 +14,24 @@ Det som faktisk ryker er sjelden Vercels edge — det er *vårt oppsett* på
 Vercel: en feilet deploy, et alias som peker feil, en pinnet tilbakerulling.
 En vakt på samme plattform ville vært stille gjennom alle tre.
 
+## Hvorfor vakten kjører på Cloudflare
+
+Første forsøk lå i GitHub Actions. Den kjørte aldri på timeplan: to timer,
+~24 tapte slots, null planlagte kjøringer — bare de manuelle. GitHubs egen
+dokumentasjon kaller `schedule` best effort, med forsinkelser ved høy last og
+«some queued jobs may be dropped». Fem minutter er det korteste de tillater,
+og det de dropper først. **En vakt som bare går når noen ber den, er ikke en
+vakt.**
+
+Cloudflare Workers har en ekte planlegger, og vi har allerede
+databehandleravtale og TIA der — det var den eneste innvendingen, og den holdt
+ikke. Workeren behandler dessuten ingen personopplysninger: den spør to
+helse-endepunkter og skriver «oppe/nede».
+
+Sideeffekten er at det siste forbeholdet i D-149 forsvant. Med Actions sto
+vakten *og* siden hos GitHub, så en GitHub-nedetid tok begge. Nå er de tre
+uavhengige: podene på Vercel, vakten hos Cloudflare, siden på GitHub Pages.
+
 ## Hva vakten ser — og ikke ser
 
 | Sjekkes | Hvordan |
@@ -49,26 +67,53 @@ grønn  →  ✕  →  ORANSJE  →  ✕  →  RØD → Telegram
 
 | Fil | Hva |
 |---|---|
-| `scripts/watch.mjs` | Vakten. Ingen avhengigheter, Node 24. |
-| `.github/workflows/watch.yml` | Kjøreplanen. |
+| `worker/src/index.mjs` | Vakten. Ingen avhengigheter, ingen build. |
+| `worker/wrangler.toml` | Kjøreplanen. |
 | `status.json` | Nåtilstand. Skrives av hver kjøring. |
 | `history.json` | 90 dager, én rad per dag, med hendelser. |
 | `index.html` | Siden. Statisk, leser de to filene. |
+
+Vakten skriver begge filene i **én** commit via Git Data API-et, så
+historikken leser som én sjekk per commit. Tree-endepunktet tar innholdet som
+ren UTF-8, så Workeren slipper å base64-kode — den eneste operasjonen som
+ville kostet nevneverdig av de 10 millisekundene CPU gratisnivået gir.
 
 Historikken er gratis: hver sjekk er en commit med tidsstempel. Det er mer
 sporbart enn de fleste betalte statussider gir.
 
 ## Oppsett
 
-Tre secrets under **Settings → Secrets and variables → Actions**:
+### Vakten
+
+```
+cd worker
+npx wrangler deploy
+npx wrangler secret put INTERNAL_RPC_SECRET
+npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put TELEGRAM_BOT_TOKEN
+npx wrangler secret put TELEGRAM_CHAT_ID
+npx wrangler secret put TRIGGER_SECRET
+```
 
 | Secret | Hva |
 |---|---|
 | `INTERNAL_RPC_SECRET` | Samme verdi som i Vercel. Bearer mot helse-endepunktene. |
+| `GITHUB_TOKEN` | Fine-grained PAT. **Contents: Read and write, kun på dette repoet.** Ingenting mer. |
 | `TELEGRAM_BOT_TOKEN` | Samme bot som resten av varslingen. |
 | `TELEGRAM_CHAT_ID` | Samme chat. |
+| `TRIGGER_SECRET` | Beskytter manuell kjøring. Egen verdi — ruten skriver til repoet. |
 
-Og **Settings → Pages** → kilde `main` / rot.
+Manuell kjøring, som erstatter «Run workflow»-knappen:
+
+```
+curl -H "authorization: Bearer $TRIGGER_SECRET" https://kodo-vakt.<konto>.workers.dev
+```
+
+Den er bedre enn knappen var: den beviser at det er *Workeren* som virker.
+
+### Siden
+
+**Settings → Pages** → kilde `main` / rot.
 
 For `status.kodovault.no`: én CNAME hos webhuset → `meetmax-no.github.io`.
 GitHub utsteder sertifikatet selv, uavhengig av Vercel.

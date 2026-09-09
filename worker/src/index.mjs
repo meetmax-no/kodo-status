@@ -1,0 +1,366 @@
+/**
+ * Ko | Do · Vault — D-149 (2026-09-09) — vakten, som Cloudflare Worker
+ *
+ * Hvert 5. minutt: spør helse-endepunktene, før strike-reglene, skriv
+ * status.json + history.json til `meetmax-no/kodo-status`, og varsel på
+ * Telegram — kun på overgang.
+ *
+ * ─── Hvorfor den flyttet hit fra GitHub Actions ──────────────────────
+ * Actions kjørte aldri på timeplan. To timer, ~24 tapte slots, null
+ * kjøringer — bare de manuelle. GitHubs cron er «best effort» i deres egen
+ * dokumentasjon: forsinkelser ved høy last, og «some queued jobs may be
+ * dropped». Fem minutter er det korteste de tillater — og det de dropper
+ * først.
+ * En vakt som bare går når noen ber den, er ikke en vakt.
+ *
+ * Cloudflare ble valgt fordi vi allerede har databehandleravtale og TIA der.
+ * Det var innvendingen mot dem i utgangspunktet, og den holdt ikke.
+ *
+ * ─── Og den løser noe designet ikke klarte ───────────────────────────
+ * D-149 endte med ett innrømmet forbehold: med Actions sto vakten OG siden
+ * hos GitHub, så en GitHub-nedetid tok begge. Nå er de tre uavhengige:
+ * podene på Vercel, vakten hos Cloudflare, siden på GitHub Pages. Ingen av
+ * dem kan ta de to andre.
+ *
+ * ─── Hva den bevisst IKKE ser ────────────────────────────────────────
+ * Kundepodene, én for én. Repoet er offentlig, og en liste over hvem som er
+ * kunde hører ikke hjemme der. Vakten ser admin og demo; sertifikatsveipet
+ * på admin ser resten, og det svaret blir i Telegram og morgenrapporten.
+ *
+ * Ingen avhengigheter. Ingen build. Ren ESM.
+ */
+
+const OWNER = "meetmax-no";
+const REPO = "kodo-status";
+const BRANCH = "main";
+
+const STATUS_FILE = "status.json";
+const HISTORY_FILE = "history.json";
+
+/**
+ * demo, ikke mike. demo er nivå 2 — samme sperre og samme oppsett som ekte
+ * kunder. mike er nivå 1 og ligger foran; den speiler ikke kundens virkelighet.
+ *
+ * Admin spørres på `/api/internal/health` fordi databasen admin er avhengig av
+ * er det sentrale registeret. Den sjekken må ligge i et bucket med sentrale
+ * creds (D-071), og av de godkjente er `internal` det som autentiserer med
+ * bearer i stedet for sesjon (D-076). Første forsøk lå i `/api/admin/health`
+ * og svarte «Admin-session mangler» — vakten har ingen sesjon.
+ */
+const TARGETS = [
+  {
+    key: "admin",
+    label: "Administrasjon",
+    detail: "Innlogging, provisjonering og fakturering",
+    url: "https://admin.kodovault.no/api/internal/health",
+  },
+  {
+    key: "demo",
+    label: "Kundepod",
+    detail: "Representativ kundeinstallasjon (demo)",
+    url: "https://demo.kodovault.no/api/health",
+  },
+];
+
+const TIMEOUT_MS = 15_000;
+const HISTORY_DAYS = 90;
+
+const GH = "https://api.github.com";
+
+function ghHeaders(env) {
+  return {
+    authorization: `Bearer ${env.GITHUB_TOKEN}`,
+    accept: "application/vnd.github+json",
+    "content-type": "application/json",
+    // GitHub avviser kall uten User-Agent.
+    "user-agent": "kodo-vakt",
+  };
+}
+
+/**
+ * Leses via API-et, ikke via raw.githubusercontent. Raw ligger bak CDN med
+ * cache i minutter, og en vakt som leser sin egen forrige tilstand fra en
+ * utdatert kopi ville mistet nettopp de overgangene den varsler på.
+ */
+async function readJson(env, path, fallback) {
+  const res = await fetch(
+    `${GH}/repos/${OWNER}/${REPO}/contents/${path}?ref=${BRANCH}`,
+    { headers: { ...ghHeaders(env), accept: "application/vnd.github.raw" } },
+  );
+  if (!res.ok) return fallback;
+  try {
+    return await res.json();
+  } catch {
+    return fallback;
+  }
+}
+
+/**
+ * Begge filene i ÉN commit, via Git Data API-et.
+ *
+ * To grunner. Historikken skal lese som én sjekk per commit, ikke to. Og
+ * tree-endepunktet tar innholdet som ren UTF-8-streng, så vi slipper å
+ * base64-kode i Workeren — det er den eneste operasjonen her som ville
+ * kostet nevneverdig av de 10 millisekundene CPU gratisnivået gir oss.
+ */
+async function commitFiles(env, files, message) {
+  const h = ghHeaders(env);
+
+  const refRes = await fetch(`${GH}/repos/${OWNER}/${REPO}/git/ref/heads/${BRANCH}`, { headers: h });
+  if (!refRes.ok) throw new Error(`git/ref: ${refRes.status} ${await refRes.text()}`);
+  const baseCommitSha = (await refRes.json()).object.sha;
+
+  const commitRes = await fetch(`${GH}/repos/${OWNER}/${REPO}/git/commits/${baseCommitSha}`, { headers: h });
+  if (!commitRes.ok) throw new Error(`git/commits: ${commitRes.status}`);
+  const baseTreeSha = (await commitRes.json()).tree.sha;
+
+  const treeRes = await fetch(`${GH}/repos/${OWNER}/${REPO}/git/trees`, {
+    method: "POST",
+    headers: h,
+    body: JSON.stringify({
+      base_tree: baseTreeSha,
+      tree: Object.entries(files).map(([path, content]) => ({
+        path,
+        mode: "100644",
+        type: "blob",
+        content,
+      })),
+    }),
+  });
+  if (!treeRes.ok) throw new Error(`git/trees: ${treeRes.status} ${await treeRes.text()}`);
+  const newTreeSha = (await treeRes.json()).sha;
+
+  const newCommitRes = await fetch(`${GH}/repos/${OWNER}/${REPO}/git/commits`, {
+    method: "POST",
+    headers: h,
+    body: JSON.stringify({
+      message,
+      tree: newTreeSha,
+      parents: [baseCommitSha],
+      author: { name: "kodo-vakt", email: "vakt@kodovault.no", date: new Date().toISOString() },
+    }),
+  });
+  if (!newCommitRes.ok) throw new Error(`git/commits POST: ${newCommitRes.status}`);
+  const newCommitSha = (await newCommitRes.json()).sha;
+
+  // Uten force: skjøt en annen kjøring inn imellom, feiler denne i stedet for
+  // å overskrive den. Vi taper ett målepunkt og tar det igjen om fem minutter
+  // — langt bedre enn to vakter som skriver over hverandres overganger.
+  const patchRes = await fetch(`${GH}/repos/${OWNER}/${REPO}/git/refs/heads/${BRANCH}`, {
+    method: "PATCH",
+    headers: h,
+    body: JSON.stringify({ sha: newCommitSha, force: false }),
+  });
+  if (!patchRes.ok) throw new Error(`git/refs PATCH: ${patchRes.status} ${await patchRes.text()}`);
+}
+
+/**
+ * Ett kall mot ett endepunkt. 200 + `ok: true` er friskt; alt annet er ikke.
+ *
+ * Vi stoler på statuskoden, men leser kroppen når den finnes: en pod kan
+ * svare 503 med `checks.database = "fail"`, og da vil vi ha den grunnen med
+ * inn i historikken i stedet for bare «nede».
+ */
+async function probe(target, bearer) {
+  const started = Date.now();
+  try {
+    const res = await fetch(target.url, {
+      headers: { authorization: `Bearer ${bearer}` },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      cf: { cacheTtl: 0 },
+    });
+    const ms = Date.now() - started;
+    let body = null;
+    try {
+      body = await res.json();
+    } catch {
+      /* tomt eller ikke-JSON — statuskoden er fortsatt svaret */
+    }
+    if (res.status === 200 && body?.ok === true) return { ok: true, ms, reason: null };
+    const why =
+      body?.detail ??
+      (body?.checks
+        ? Object.entries(body.checks)
+            .filter(([, v]) => v === "fail")
+            .map(([k]) => k)
+            .join(", ") || `HTTP ${res.status}`
+        : `HTTP ${res.status}`);
+    return { ok: false, ms, reason: String(why).slice(0, 200) };
+  } catch (e) {
+    return {
+      ok: false,
+      ms: Date.now() - started,
+      reason: e.name === "TimeoutError" ? `tidsavbrudd etter ${TIMEOUT_MS} ms` : e.message,
+    };
+  }
+}
+
+async function telegram(env, text) {
+  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    console.log("[vakt] Telegram ikke konfigurert — hopper over varsel");
+    return;
+  }
+  const res = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      chat_id: env.TELEGRAM_CHAT_ID,
+      text,
+      parse_mode: "HTML",
+      disable_web_page_preview: true,
+    }),
+  });
+  if (!res.ok) console.error(`[vakt] Telegram ${res.status}: ${await res.text()}`);
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+/** Dagens rad, nyest først. Oransje som aldri ble rød lagres likevel — «tre
+ *  oransje denne uka, alltid 04:00» er et mønster, ikke støy. */
+function dayRow(history) {
+  const date = today();
+  let day = history.find((d) => d.date === date);
+  if (!day) {
+    day = { date, checks: 0, degraded: 0, down: 0, incidents: [] };
+    history.unshift(day);
+  }
+  return day;
+}
+
+/** Hendelsen kan ha startet i går. Vi leter bakover, ikke bare i dag. */
+function closeIncident(history, key, from, to) {
+  for (const day of history) {
+    const open = day.incidents?.find((i) => i.target === key && i.to === null);
+    if (open) {
+      open.to = to;
+      if (from) open.from = from;
+      return;
+    }
+  }
+}
+
+export async function runCheck(env) {
+  if (!env.INTERNAL_RPC_SECRET) throw new Error("INTERNAL_RPC_SECRET mangler");
+
+  const now = new Date().toISOString();
+  const [prev, history] = await Promise.all([
+    readJson(env, STATUS_FILE, { targets: {} }),
+    readJson(env, HISTORY_FILE, []),
+  ]);
+
+  const results = await Promise.all(TARGETS.map((t) => probe(t, env.INTERNAL_RPC_SECRET)));
+
+  const alerts = [];
+  const targets = {};
+
+  for (const [i, t] of TARGETS.entries()) {
+    const before = prev.targets?.[t.key] ?? {
+      state: "up", misses: 0, since: now, lastOk: null, incidentFrom: null,
+    };
+    const result = results[i];
+
+    let state = before.state;
+    let misses = before.misses ?? 0;
+    let incidentFrom = before.incidentFrom ?? null;
+
+    if (result.ok) {
+      // Én grønn sletter oransje. Krever man to, står siden gul lenge etter
+      // at alt er bra — og da slutter man å se på fargen.
+      misses = 0;
+      state = "up";
+      if (before.state === "down") {
+        alerts.push(
+          `✅ <b>${t.label} er tilbake</b>\n${t.detail}\nNede fra ${before.incidentFrom ?? "?"} til ${now}.`,
+        );
+        closeIncident(history, t.key, before.incidentFrom, now);
+        incidentFrom = null;
+      }
+    } else {
+      misses += 1;
+      // Oransje varsler ikke. Ellers vekkes du av nettverkshikke, skrur av
+      // lyden, og er stille når det gjelder.
+      state = misses === 1 ? "degraded" : "down";
+      if (state === "down" && before.state !== "down") {
+        // Rødt varsler på OVERGANG, ikke per sjekk. Seks timers nedetid med
+        // fem minutters intervall er 72 mislykkede sjekker; du skal ha én
+        // melding når det blir rødt og én når det er tilbake.
+        incidentFrom = before.incidentFrom ?? now;
+        alerts.push(
+          `🚨 <b>${t.label} er nede</b>\n${t.detail}\n${result.reason ?? "ukjent"}\n\nTo sjekker på rad har feilet.`,
+        );
+        dayRow(history).incidents.push({
+          target: t.key, label: t.label, from: incidentFrom, to: null,
+          reason: result.reason ?? null,
+        });
+      }
+    }
+
+    targets[t.key] = {
+      label: t.label,
+      detail: t.detail,
+      state,
+      misses,
+      since: state === before.state ? (before.since ?? now) : now,
+      lastOk: result.ok ? now : (before.lastOk ?? null),
+      lastCheck: now,
+      responseMs: result.ms,
+      reason: result.ok ? null : result.reason,
+      incidentFrom,
+    };
+  }
+
+  const day = dayRow(history);
+  day.checks += 1;
+  const values = Object.values(targets);
+  if (values.some((t) => t.state === "down")) day.down += 1;
+  else if (values.some((t) => t.state === "degraded")) day.degraded += 1;
+
+  const overall = values.some((t) => t.state === "down")
+    ? "down"
+    : values.some((t) => t.state === "degraded")
+      ? "degraded"
+      : "up";
+
+  await commitFiles(
+    env,
+    {
+      [STATUS_FILE]: JSON.stringify({ generatedAt: now, overall, targets }, null, 2) + "\n",
+      [HISTORY_FILE]: JSON.stringify(history.slice(0, HISTORY_DAYS), null, 2) + "\n",
+    },
+    `vakt: ${now.slice(0, 16).replace("T", " ")} UTC`,
+  );
+
+  for (const a of alerts) await telegram(env, a);
+
+  const summary = `${now} — samlet: ${overall}; ` +
+    Object.entries(targets).map(([k, v]) => `${k}=${v.state}`).join(", ");
+  console.log(`[vakt] ${summary}`);
+  return { overall, targets, alerts: alerts.length, at: now };
+}
+
+export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(
+      runCheck(env).catch((e) => console.error("[vakt] kjøringen feilet:", e.stack ?? e)),
+    );
+  },
+
+  /**
+   * Manuell kjøring. Erstatter «Run workflow»-knappen i Actions, og er
+   * bedre enn den: den beviser at det er WORKEREN som virker, ikke en
+   * annen løper. Lukket bak egen hemmelighet — endepunktet skriver til
+   * repoet og kan sende Telegram.
+   */
+  async fetch(req, env) {
+    const auth = req.headers.get("authorization") ?? "";
+    if (!env.TRIGGER_SECRET || auth !== `Bearer ${env.TRIGGER_SECRET}`) {
+      return new Response("unauthorized\n", { status: 401 });
+    }
+    try {
+      const out = await runCheck(env);
+      return Response.json(out);
+    } catch (e) {
+      return Response.json({ error: e.message }, { status: 500 });
+    }
+  },
+};
