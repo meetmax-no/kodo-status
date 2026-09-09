@@ -55,8 +55,10 @@
   .note p:last-child { margin-bottom: 0; }
   .note b { color: var(--ink); font-weight: 600; }
 
-  .bars { display: flex; gap: 2px; align-items: flex-end; height: 40px; }
-  .bar { flex: 1 1 0; min-width: 2px; height: 100%; border-radius: 2px; background: var(--unknown); }
+  .bars { display: flex; gap: 2px; align-items: flex-end; height: 40px; justify-content: flex-start; }
+  /* max-width gjør at få dager blir smale søyler til venstre i stedet for
+     én bred flate som leses som en strek. Ved 90 dager binder den ikke. */
+  .bar { flex: 1 1 0; min-width: 2px; max-width: 9px; height: 100%; border-radius: 2px; background: var(--unknown); }
   .bar.up { background: var(--up); }
   .bar.degraded { background: var(--degraded); }
   .bar.down { background: var(--down); }
@@ -201,7 +203,10 @@ function tegnHistorikk(h) {
 
   const totalt = dager.reduce((a, d) => a + (d.checks || 0), 0);
   const feil = dager.reduce((a, d) => a + (d.down || 0), 0);
-  document.getElementById("scale-from").textContent = dager[0].date;
+  // Si hvor tynt grunnlaget er så lenge det er tynt. «100 % oppe» over én dag
+  // er sant, men det er ikke det samme løftet som over nitti.
+  document.getElementById("scale-from").textContent =
+    dager.length < 90 ? `${dager.length} ${dager.length === 1 ? "dag" : "dager"} med data` : dager[0].date;
   document.getElementById("scale-uptime").textContent =
     totalt ? ((1 - feil / totalt) * 100).toFixed(2) + " % oppe" : "";
 }
