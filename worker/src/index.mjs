@@ -371,21 +371,46 @@ export default {
   },
 
   /**
-   * Manuell kjøring. Erstatter «Run workflow»-knappen i Actions, og er
-   * bedre enn den: den beviser at det er WORKEREN som virker, ikke en
-   * annen løper. Lukket bak egen hemmelighet — endepunktet skriver til
-   * repoet og kan sende Telegram.
+   * Manuell kjøring — «sjekk nå, ikke vent på klokka».
+   *
+   * Hemmeligheten kan gis på to måter, og det er med vilje:
+   *
+   *   ?key=<TRIGGER_SECRET>          — kan limes rett i adressefeltet
+   *   Authorization: Bearer <secret> — for skript og verktøy
+   *
+   * Nøkkel i URL havner i nettleserhistorikk og i logger, og det er en ekte
+   * ulempe. Men den låser opp nøyaktig én ting: å kjøre en sjekk nå, som
+   * klokka gjør hvert femte minutt uansett. Alternativet var en utløser bare
+   * den med kommandolinje kunne bruke — altså ingen utløser for den som
+   * faktisk drifter dette. Bruk en lang, tilfeldig verdi, og bytt den om den
+   * kommer på avveie.
    */
   async fetch(req, env) {
+    const url = new URL(req.url);
     const auth = req.headers.get("authorization") ?? "";
-    if (!env.TRIGGER_SECRET || auth !== `Bearer ${env.TRIGGER_SECRET}`) {
-      return new Response("unauthorized\n", { status: 401 });
+    const gitt = url.searchParams.get("key") ?? (auth.startsWith("Bearer ") ? auth.slice(7) : "");
+    if (!env.TRIGGER_SECRET || gitt !== env.TRIGGER_SECRET) {
+      return new Response("Feil eller manglende nøkkel.\n", {
+        status: 401,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
     }
     try {
       const out = await runCheck(env);
-      return Response.json(out);
+      // Lesbart i nettleseren, ikke bare for maskiner.
+      const linjer = Object.entries(out.targets).map(
+        ([k, v]) => `  ${k.padEnd(6)} ${v.state}${v.reason ? " — " + v.reason : ""}`,
+      );
+      return new Response(
+        `Sjekk kjørt ${out.at}\n\nSamlet: ${out.overall}\n${linjer.join("\n")}\n\n` +
+          `Varsler sendt: ${out.alerts}\n\nSe status.kodovault.no om et minutt.\n`,
+        { headers: { "content-type": "text/plain; charset=utf-8" } },
+      );
     } catch (e) {
-      return Response.json({ error: e.message }, { status: 500 });
+      return new Response(`Kjøringen feilet:\n\n${e.message}\n`, {
+        status: 500,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
     }
   },
 };

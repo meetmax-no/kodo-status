@@ -110,15 +110,49 @@ Det betyr «hvert femte minutt».
 
 ---
 
-## Del 5 — Sjekk at det virker
+## Del 5 — Kjør en sjekk med én gang
 
-Vent fem–ti minutter, og se på **status.kodovault.no**. Står det et ferskt
-tidspunkt under «Sist sjekket», er du ferdig.
+Du trenger ikke vente på klokka. Vakten kan startes fra adressefeltet.
 
-Vil du ikke vente: gå til **Logs** på Worker-siden i Cloudflare og se om det
-kommer linjer som begynner med `[vakt]`.
+1. På Worker-siden i Cloudflare, finn adressen til programmet. Den ser slik
+   ut: `https://kodo-vakt.<noe>.workers.dev`
+2. Lim den inn i nettleseren, og legg til nøkkelen din på slutten:
 
-Går det galt, står feilen i de samme loggene.
+```
+https://kodo-vakt.<noe>.workers.dev/?key=DIN_TRIGGER_SECRET
+```
+
+Der `DIN_TRIGGER_SECRET` er verdien du fant på i Del 3.
+
+Du får et svar som dette:
+
+```
+Sjekk kjørt 2026-09-09T19:28:45.514Z
+
+Samlet: up
+  admin  up
+  demo   up
+
+Varsler sendt: 0
+
+Se status.kodovault.no om et minutt.
+```
+
+Ser du det, virker alt: programmet nådde podene, skrev til repoet, og
+statussiden oppdaterer seg innen et minutt.
+
+Får du «Feil eller manglende nøkkel», er `TRIGGER_SECRET` skrevet feil i
+Del 3. Får du en feilmelding om GitHub, er det `GITHUB_TOKEN` som er feil
+eller ikke godkjent ennå.
+
+> Nøkkelen i adressen havner i nettleserhistorikken. Det er en bevisst
+> avveining: den låser opp én ting — å kjøre en sjekk nå, som klokka gjør
+> hvert femte minutt uansett. Bruk en lang, tilfeldig verdi, og bytt den om
+> den kommer på avveie.
+
+**Vil du se det innenfra:** klikk **Logs** på Worker-siden. Der kommer linjer
+som begynner med `[vakt]` for hver kjøring, og der står feilene hvis noe går
+galt.
 
 ---
 
