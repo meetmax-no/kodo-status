@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-09.5";
+const VERSJON = "2026-09-09.6";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -376,6 +376,14 @@ async function reportSelfFailure(env, e) {
 
 export default {
   async scheduled(event, env, ctx) {
+    // FØRSTE linje, før alt annet. Vi har brukt en time på å slutte oss til
+    // om cronen kjører ut fra om det dukket opp commits — altså fra enden av
+    // en kjede med fem ledd. Denne linja skrives før noe kan gå galt, så den
+    // svarer på det ene spørsmålet: kaller Cloudflare oss i det hele tatt?
+    console.log(
+      `[vakt ${VERSJON}] CRON UTLØST — planlagt ` +
+        `${new Date(event.scheduledTime).toISOString()}, uttrykk "${event.cron}"`,
+    );
     ctx.waitUntil(runCheck(env).catch((e) => reportSelfFailure(env, e)));
   },
 
