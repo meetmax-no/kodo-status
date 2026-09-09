@@ -386,14 +386,62 @@ export default {
    * kommer på avveie.
    */
   async fetch(req, env) {
+    const tekst = (body, status = 200) =>
+      new Response(body, { status, headers: { "content-type": "text/plain; charset=utf-8" } });
+
+    if (!env.TRIGGER_SECRET) {
+      // Skill dette fra «feil nøkkel». Uten skillet står man og gjetter på
+      // hvilken av to helt ulike feil man har.
+      return tekst(
+        "TRIGGER_SECRET er ikke satt på denne Workeren.\n\n" +
+          "Cloudflare → kodo-vakt → Settings → Variables and Secrets → + Add,\n" +
+          "type Secret, navn nøyaktig TRIGGER_SECRET. Husk Deploy etterpå.\n",
+        401,
+      );
+    }
+
     const url = new URL(req.url);
     const auth = req.headers.get("authorization") ?? "";
-    const gitt = url.searchParams.get("key") ?? (auth.startsWith("Bearer ") ? auth.slice(7) : "");
-    if (!env.TRIGGER_SECRET || gitt !== env.TRIGGER_SECRET) {
-      return new Response("Feil eller manglende nøkkel.\n", {
-        status: 401,
-        headers: { "content-type": "text/plain; charset=utf-8" },
-      });
+
+    // `searchParams` tolker `+` som mellomrom — en tilfeldig generert nøkkel
+    // med `+` i ville derfor aldri matchet. Vi leser derfor også spørringen
+    // rå, og prøver begge tolkninger. Trimming fordi en verdi limt inn i
+    // Cloudflares skjema lett får med seg et linjeskift.
+    // Del kun på FØRSTE `=`. En nøkkel som selv inneholder `=` — base64 har
+    // det ofte — ble ellers kuttet på midten. Fanget av testen, ikke av øyet.
+    const rå =
+      url.search
+        .replace(/^\?/, "")
+        .split("&")
+        .map((p) => {
+          const i = p.indexOf("=");
+          return i === -1 ? [p, ""] : [p.slice(0, i), p.slice(i + 1)];
+        })
+        .find(([k]) => k === "key")?.[1] ?? "";
+    let råDekodet = rå;
+    try {
+      råDekodet = decodeURIComponent(rå);
+    } catch {
+      /* ugyldig %-sekvens — bruk den rå verdien */
+    }
+
+    const fasit = env.TRIGGER_SECRET.trim();
+    const kandidater = [
+      url.searchParams.get("key"),
+      rå,
+      råDekodet,
+      auth.startsWith("Bearer ") ? auth.slice(7) : null,
+    ];
+    if (!kandidater.some((k) => typeof k === "string" && k.trim() === fasit)) {
+      return tekst(
+        "Nøkkelen stemmer ikke.\n\n" +
+          "TRIGGER_SECRET er satt på Workeren, men verdien i adressen er en\n" +
+          "annen. Vanligste årsak: verdien ble limt inn med et mellomrom eller\n" +
+          "linjeskift, eller den inneholder tegn som må skrives om i en URL.\n\n" +
+          "Enkleste fiks: sett TRIGGER_SECRET til noe med bare bokstaver og\n" +
+          "tall, deploy, og prøv igjen.\n",
+        401,
+      );
     }
     try {
       const out = await runCheck(env);
@@ -401,16 +449,12 @@ export default {
       const linjer = Object.entries(out.targets).map(
         ([k, v]) => `  ${k.padEnd(6)} ${v.state}${v.reason ? " — " + v.reason : ""}`,
       );
-      return new Response(
+      return tekst(
         `Sjekk kjørt ${out.at}\n\nSamlet: ${out.overall}\n${linjer.join("\n")}\n\n` +
           `Varsler sendt: ${out.alerts}\n\nSe status.kodovault.no om et minutt.\n`,
-        { headers: { "content-type": "text/plain; charset=utf-8" } },
       );
     } catch (e) {
-      return new Response(`Kjøringen feilet:\n\n${e.message}\n`, {
-        status: 500,
-        headers: { "content-type": "text/plain; charset=utf-8" },
-      });
+      return tekst(`Kjøringen feilet:\n\n${e.message}\n`, 500);
     }
   },
 };

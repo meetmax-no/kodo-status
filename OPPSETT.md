@@ -88,10 +88,16 @@ Fortsatt inne på `kodo-vakt`:
 | `GITHUB_TOKEN` | Passordet du kopierte i Del 1 |
 | `TELEGRAM_BOT_TOKEN` | Samme som i Vercel |
 | `TELEGRAM_CHAT_ID` | Samme som i Vercel |
-| `TRIGGER_SECRET` | Finn på noe langt og tilfeldig. Bare du trenger den. |
+| `TRIGGER_SECRET` | Finn på noe langt og tilfeldig — **bare bokstaver og tall**. Se merknaden under. |
 
 **Secret**, ikke **Text**: da er verdien kryptert og kan ikke leses ut igjen
 etterpå, verken av deg eller andre.
+
+> **Om `TRIGGER_SECRET`:** hold den til bokstaver og tall. Tegn som `+`, `/`,
+> `=` og `&` betyr noe spesielt i en nettadresse, og du skal bruke denne i
+> adressefeltet i Del 5. Vakten håndterer dem nå, men det er én ting mindre
+> som kan gå galt. Pass også på at det ikke henger med et mellomrom eller
+> linjeskift når du limer inn.
 
 Klikk **Deploy** når alle fem står der.
 
@@ -141,9 +147,14 @@ Se status.kodovault.no om et minutt.
 Ser du det, virker alt: programmet nådde podene, skrev til repoet, og
 statussiden oppdaterer seg innen et minutt.
 
-Får du «Feil eller manglende nøkkel», er `TRIGGER_SECRET` skrevet feil i
-Del 3. Får du en feilmelding om GitHub, er det `GITHUB_TOKEN` som er feil
-eller ikke godkjent ennå.
+Feilmeldingene sier hva som er galt:
+
+| Svar | Hva det betyr |
+|---|---|
+| «TRIGGER_SECRET er ikke satt på denne Workeren» | Hemmeligheten mangler, eller navnet er skrevet feil i Del 3 |
+| «Nøkkelen stemmer ikke» | Hemmeligheten finnes, men verdien i adressen er en annen — ofte et mellomrom som ble med ved innliming |
+| Feil som nevner GitHub | `GITHUB_TOKEN` er feil, eller ikke godkjent av org-admin ennå |
+| `unauthorized` | Workeren kjører **gammel kode**. Lim inn på nytt og Deploy. |
 
 > Nøkkelen i adressen havner i nettleserhistorikken. Det er en bevisst
 > avveining: den låser opp én ting — å kjøre en sjekk nå, som klokka gjør
