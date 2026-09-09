@@ -18,7 +18,7 @@ En vakt på samme plattform ville vært stille gjennom alle tre.
 
 | Sjekkes | Hvordan |
 |---|---|
-| Administrasjon | `admin.kodovault.no/api/admin/health` hvert 5. min |
+| Administrasjon | `admin.kodovault.no/api/internal/health` hvert 5. min |
 | Kundepod (demo) | `demo.kodovault.no/api/health` hvert 5. min |
 
 **Kundepodene sjekkes ikke én for én herfra.** Dette repoet er offentlig, og en
@@ -49,7 +49,7 @@ grønn  →  ✕  →  ORANSJE  →  ✕  →  RØD → Telegram
 
 | Fil | Hva |
 |---|---|
-| `scripts/watch.mjs` | Vakten. Ingen avhengigheter. |
+| `scripts/watch.mjs` | Vakten. Ingen avhengigheter, Node 24. |
 | `.github/workflows/watch.yml` | Kjøreplanen. |
 | `status.json` | Nåtilstand. Skrives av hver kjøring. |
 | `history.json` | 90 dager, én rad per dag, med hendelser. |

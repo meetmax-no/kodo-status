@@ -30,11 +30,13 @@ jobs:
   sjekk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      # v7 kjører på node24. v4 var pinnet til node20, som fjernes fra
+      # runnerne 23. september 2026 — to uker fra nå.
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Sjekk podene
         env:

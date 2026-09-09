@@ -25,15 +25,18 @@ import { readFile, writeFile } from "node:fs/promises";
  * demo, ikke mike. demo er nivå 2 — samme sperre og samme oppsett som ekte
  * kunder. mike er nivå 1 og ligger foran; den speiler ikke kundens virkelighet.
  *
- * Admin spørres på `/api/admin/health` fordi databasen admin er avhengig av er
- * det sentrale registeret, og den sjekken bor i admin-bucket-et (D-071).
+ * Admin spørres på `/api/internal/health` fordi databasen admin er avhengig av
+ * er det sentrale registeret. Den sjekken må ligge i et bucket med sentrale
+ * creds (D-071), og av de godkjente er `internal` det som autentiserer med
+ * bearer i stedet for sesjon (D-076). Første forsøk lå i `/api/admin/health`
+ * og svarte «Admin-session mangler» — vakten har ingen sesjon.
  */
 const TARGETS = [
   {
     key: "admin",
     label: "Administrasjon",
     detail: "Innlogging, provisjonering og fakturering",
-    url: "https://admin.kodovault.no/api/admin/health",
+    url: "https://admin.kodovault.no/api/internal/health",
   },
   {
     key: "demo",
