@@ -31,6 +31,12 @@
   .banner .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
   .banner strong { font-size: 16px; font-weight: 600; }
   .banner .when { margin-left: auto; color: var(--faint); font-size: 12px; }
+  .stale {
+    margin: -16px 0 28px; padding: 14px 20px; border-radius: 10px;
+    border: 1px solid var(--degraded); background: rgba(210,153,34,0.08);
+    font-size: 13.5px; color: var(--ink);
+  }
+  .stale b { font-weight: 600; }
 
   .dot.up { background: var(--up); }
   .dot.degraded { background: var(--degraded); }
@@ -87,6 +93,8 @@
     <strong id="banner-text">Henter status…</strong>
     <span class="when" id="banner-when"></span>
   </div>
+
+  <div class="stale" id="stale" hidden></div>
 
   <h2>Tjenester</h2>
   <div class="card" id="targets"><div class="empty">Henter…</div></div>
@@ -155,6 +163,36 @@ async function hent(fil, reserve) {
     if (!r.ok) throw new Error(r.status);
     return await r.json();
   } catch { return reserve; }
+}
+
+/**
+ * Hvor gammel en sjekk får være før siden slutter å stå inne for den.
+ * Vakten går hvert 5. minutt; tre tapte kjøringer på rad er ikke en hikke.
+ */
+const FORELDET_MS = 16 * 60 * 1000;
+
+/**
+ * Det farligste denne siden kan gjøre er å stå grønn på gamle tall. Stopper
+ * vakten — utløpt token, GitHub nede — fryser status.json på siste gode
+ * sjekk, og siden ville meldt «alle systemer i drift» i evighet. Da sier vi
+ * heller at vi ikke vet.
+ */
+function sjekkForeldet(s) {
+  const boks = document.getElementById("stale");
+  if (!s.generatedAt) return;
+  const alder = Date.now() - new Date(s.generatedAt).getTime();
+  if (alder < FORELDET_MS) return;
+  const min = Math.floor(alder / 60000);
+  const alderTekst = min < 120 ? `${min} minutter` : `${Math.floor(min / 60)} timer`;
+  boks.innerHTML =
+    `<b>Denne siden er ikke oppdatert på ${alderTekst}.</b> Vakten har sluttet å ` +
+    `rapportere, så tilstanden under er fra ${tid(s.generatedAt)} og kan være utdatert. ` +
+    `Vi er varslet. Trenger du svar nå: ` +
+    `<a href="mailto:support@kodovault.no">support@kodovault.no</a>`;
+  boks.hidden = false;
+  // Prikken skal ikke stå grønn over en tekst som sier at vi ikke vet.
+  document.getElementById("banner-dot").className = "dot unknown";
+  document.getElementById("banner-text").textContent = "Ukjent — ingen fersk sjekk";
 }
 
 function tegnStatus(s) {
@@ -236,6 +274,7 @@ function tegnHendelser(h) {
     hent("history.json", []),
   ]);
   tegnStatus(s);
+  sjekkForeldet(s);
   tegnHistorikk(h);
   tegnHendelser(h);
 })();

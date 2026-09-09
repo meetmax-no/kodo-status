@@ -338,11 +338,36 @@ export async function runCheck(env) {
   return { overall, targets, alerts: alerts.length, at: now };
 }
 
+/**
+ * Når vakten selv er ødelagt.
+ *
+ * Feiler skrivingen til GitHub — utløpt PAT er den klart vanligste årsaken,
+ * og fine-grained tokens utløper alltid — så fryser statussiden på siste gode
+ * sjekk og står grønn i evighet. Det er «alt i orden mens en kunde er nede»,
+ * som er verre enn ingen side. Den feilen skal si fra om seg selv.
+ *
+ * Vi kan ikke huske at vi har varslet: tilstanden vår ligger i det repoet vi
+ * nettopp ikke fikk skrevet til. I stedet varsles det én gang i timen, ved å
+ * bare sende i det første fem-minutters-vinduet. Grovt, men det holder — en
+ * vakt som er nede haster i timer, ikke i minutter, og et varsel hvert femte
+ * minutt ville uansett blitt skrudd av.
+ */
+async function reportSelfFailure(env, e) {
+  const detail = e instanceof Error ? e.message : String(e);
+  console.error("[vakt] kjøringen feilet:", e?.stack ?? detail);
+  if (new Date().getUTCMinutes() >= 5) return;
+  await telegram(
+    env,
+    "🔌 <b>Vakten kan ikke skrive til GitHub</b>\n" +
+      detail.slice(0, 300) +
+      "\n\nStatussiden står nå på siste gode sjekk og blir ikke oppdatert. " +
+      "Vanligste årsak: GITHUB_TOKEN er utløpt.",
+  ).catch(() => {});
+}
+
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(
-      runCheck(env).catch((e) => console.error("[vakt] kjøringen feilet:", e.stack ?? e)),
-    );
+    ctx.waitUntil(runCheck(env).catch((e) => reportSelfFailure(env, e)));
   },
 
   /**

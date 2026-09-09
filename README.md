@@ -98,7 +98,7 @@ npx wrangler secret put TRIGGER_SECRET
 | Secret | Hva |
 |---|---|
 | `INTERNAL_RPC_SECRET` | Samme verdi som i Vercel. Bearer mot helse-endepunktene. |
-| `GITHUB_TOKEN` | Fine-grained PAT. **Contents: Read and write, kun på dette repoet.** Ingenting mer. |
+| `GITHUB_TOKEN` | Fine-grained PAT med **meetmax-no** som resource owner. **Contents: Read and write, kun på dette repoet.** Ingenting mer. Se advarselen under. |
 | `TELEGRAM_BOT_TOKEN` | Samme bot som resten av varslingen. |
 | `TELEGRAM_CHAT_ID` | Samme chat. |
 | `TRIGGER_SECRET` | Beskytter manuell kjøring. Egen verdi — ruten skriver til repoet. |
@@ -110,6 +110,26 @@ curl -H "authorization: Bearer $TRIGGER_SECRET" https://kodo-vakt.<konto>.worker
 ```
 
 Den er bedre enn knappen var: den beviser at det er *Workeren* som virker.
+
+### ⚠️ PAT-en utløper — og det er dekket
+
+Fine-grained tokens har alltid en utløpsdato. Går den ut, kan vakten fortsatt
+sjekke podene, men ikke skrive resultatet hit. Uten mottiltak ville
+statussiden frosset på siste gode sjekk og stått **grønn i evighet** — «alt i
+orden mens en kunde er nede», som er verre enn ingen side.
+
+To ting fanger det:
+
+- **Workeren varsler på Telegram** når skrivingen feiler, én gang i timen.
+  Den kan ikke huske at den har varslet — tilstanden ligger i repoet den ikke
+  fikk skrevet til — så den sender bare i det første fem-minutters-vinduet av
+  hver time. En død vakt haster i timer, ikke i minutter.
+- **Siden nekter å stå grønn på gamle tall.** Er siste sjekk eldre enn 16
+  minutter (tre tapte kjøringer), bytter den til «Ukjent — ingen fersk sjekk»
+  og forklarer over statuslinjene at tallene under er utdaterte.
+
+Sett en påminnelse før utløpsdatoen. Varslene er et sikkerhetsnett, ikke en
+plan.
 
 ### Siden
 
