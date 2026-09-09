@@ -50,8 +50,8 @@
   .row .state { margin-left: auto; text-align: right; font-size: 13px; color: var(--dim); flex: none; }
   .row .state b { display: block; color: var(--ink); font-weight: 500; }
 
-  .note { border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; background: transparent; }
-  .note p { margin: 0 0 10px; font-size: 13.5px; color: var(--dim); }
+  .note { border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; background: transparent; }
+  .note p { margin: 0 0 9px; font-size: 13px; color: var(--dim); }
   .note p:last-child { margin-bottom: 0; }
   .note b { color: var(--ink); font-weight: 600; }
 
@@ -89,28 +89,6 @@
   <h2>Tjenester</h2>
   <div class="card" id="targets"><div class="empty">Henter…</div></div>
 
-  <h2>Hva denne siden dekker</h2>
-  <div class="note">
-    <p>
-      Vakten sjekker <b>administrasjonen</b> og <b>én representativ kundepod</b>
-      hvert femte minutt — innlogging, databasen bak og at poden faktisk svarer.
-    </p>
-    <p>
-      <b>Din egen pod overvåkes ikke individuelt på denne siden.</b> Er alt grønt
-      her, betyr det at plattformen virker — ikke at nettopp din installasjon
-      gjør det. Vi sier det heller enn å vise en grønn prikk vi ikke kan stå for.
-    </p>
-    <p>
-      Sertifikatene på hver enkelt pod sveipes daglig og varsles fjorten dager
-      før utløp. Det sveipet kjører internt, fordi listen over hvem som er kunde
-      ikke hører hjemme på en offentlig side.
-    </p>
-    <p>
-      Er noe galt hos deg mens alt står grønt her:
-      <a href="mailto:support@kodovault.no">support@kodovault.no</a>.
-    </p>
-  </div>
-
   <h2>Siste 90 dager</h2>
   <div id="history-wrap">
     <div class="bars" id="bars"></div>
@@ -119,6 +97,24 @@
 
   <h2>Hendelser</h2>
   <div class="card" id="incidents"><div class="empty">Henter…</div></div>
+
+  <h2>Hva denne siden dekker</h2>
+  <div class="note">
+    <p>
+      <b>Din egen pod overvåkes ikke individuelt her.</b> Er alt grønt, betyr det
+      at plattformen virker — ikke at nettopp din installasjon gjør det. Vi sier
+      det heller enn å vise en grønn prikk vi ikke kan stå for.
+    </p>
+    <p>
+      Sertifikatene på hver pod sveipes daglig og varsles fjorten dager før
+      utløp. Det sveipet kjører internt, fordi listen over hvem som er kunde
+      ikke hører hjemme på en offentlig side.
+    </p>
+    <p>
+      Noe galt hos deg mens alt står grønt her?
+      <a href="mailto:support@kodovault.no">support@kodovault.no</a>
+    </p>
+  </div>
 
   <footer>
     Me &amp; Max AS · Org.nr 987 607 882<br />
