@@ -1,0 +1,58 @@
+# Ko | Do · Vault — D-149 (2026-09-09) — vakten
+#
+# Hvert 5. minutt: spør helse-endepunktene, før strike-reglene, skriv
+# status.json + history.json, varsle på Telegram ved overgang.
+#
+# Kjører her og ikke på Vercel med vilje: en vakt som deler skjebne med det
+# den vokter, er stille akkurat når det gjelder.
+#
+# GitHub planlegger cron upresist — jobber kan forsinkes 10–15 minutter ved
+# høy last. Det er den avtalte prisen for å slippe en leverandør: om et avvik
+# oppdages etter 5 eller 20 minutter endrer ikke hva vi gjør med det.
+
+name: vakt
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # manuell kjøring, for å teste uten å vente på cron
+
+# Én vakt om gangen. To samtidige kjøringer ville lest samme status.json og
+# skrevet over hverandre — og da forsvinner nettopp den overgangen vi varsler på.
+concurrency:
+  group: vakt
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sjekk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sjekk podene
+        env:
+          INTERNAL_RPC_SECRET: ${{ secrets.INTERNAL_RPC_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node scripts/watch.mjs
+
+      - name: Skriv resultatet til repoet
+        run: |
+          git config user.name "kodo-vakt"
+          git config user.email "vakt@kodovault.no"
+          git add status.json history.json
+          # Ingen endring betyr ingen commit. Skjer i praksis aldri — hver
+          # sjekk flytter lastCheck — men en tom commit skal vi ikke lage.
+          git diff --cached --quiet && exit 0
+          git commit -m "vakt: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          # Vakten er alene om å skrive her, men en manuell kjøring kan ha
+          # rukket å pushe. Hent inn og prøv igjen i stedet for å feile.
+          git pull --rebase --autostash origin main
+          git push
