@@ -1,29 +1,29 @@
 {
-  "generatedAt": "2026-09-09T17:48:13.878Z",
-  "overall": "degraded",
+  "generatedAt": "2026-09-09T18:36:58.054Z",
+  "overall": "up",
   "targets": {
     "admin": {
       "label": "Administrasjon",
       "detail": "Innlogging, provisjonering og fakturering",
-      "state": "degraded",
-      "misses": 1,
-      "since": "2026-09-09T17:48:13.878Z",
-      "lastOk": null,
-      "lastCheck": "2026-09-09T17:48:13.878Z",
-      "responseMs": 470,
-      "reason": "Admin-session mangler eller er utløpt.",
+      "state": "up",
+      "misses": 0,
+      "since": "2026-09-09T18:36:58.054Z",
+      "lastOk": "2026-09-09T18:36:58.054Z",
+      "lastCheck": "2026-09-09T18:36:58.054Z",
+      "responseMs": 1458,
+      "reason": null,
       "incidentFrom": null
     },
     "demo": {
       "label": "Kundepod",
       "detail": "Representativ kundeinstallasjon (demo)",
-      "state": "degraded",
-      "misses": 1,
-      "since": "2026-09-09T17:48:13.878Z",
-      "lastOk": null,
-      "lastCheck": "2026-09-09T17:48:13.878Z",
-      "responseMs": 570,
-      "reason": "HTTP 404",
+      "state": "up",
+      "misses": 0,
+      "since": "2026-09-09T18:36:58.054Z",
+      "lastOk": "2026-09-09T18:36:58.054Z",
+      "lastCheck": "2026-09-09T18:36:58.054Z",
+      "responseMs": 870,
+      "reason": null,
       "incidentFrom": null
     }
   }
