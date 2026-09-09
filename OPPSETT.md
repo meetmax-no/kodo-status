@@ -156,6 +156,10 @@ Feilmeldingene sier hva som er galt:
 | Feil som nevner GitHub | `GITHUB_TOKEN` er feil, eller ikke godkjent av org-admin ennå |
 | `unauthorized` | Workeren kjører **gammel kode**. Lim inn på nytt og Deploy. |
 
+**Hvilken versjon kjører du?** Alle svar fra vakten begynner med
+`Vakt <dato>.<nummer>`. Står det ikke noe versjonsnummer i svaret, kjører du
+en utgave fra før versjonsmerkingen — altså gammel kode.
+
 > Nøkkelen i adressen havner i nettleserhistorikken. Det er en bevisst
 > avveining: den låser opp én ting — å kjøre en sjekk nå, som klokka gjør
 > hvert femte minutt uansett. Bruk en lang, tilfeldig verdi, og bytt den om

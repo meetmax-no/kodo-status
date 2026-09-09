@@ -30,6 +30,15 @@
  * Ingen avhengigheter. Ingen build. Ren ESM.
  */
 
+/**
+ * Versjonsmerke. Koden limes inn manuelt i Cloudflare, og da er det ingenting
+ * som forteller hvilken utgave som faktisk kjører. Det kostet oss en runde:
+ * en gammel innliming svarte «unauthorized» mens den nye koden lå i repoet,
+ * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
+ * den manuelle kjøringen og i loggen.
+ */
+const VERSJON = "2026-09-09.4";
+
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
 const BRANCH = "main";
@@ -334,7 +343,7 @@ export async function runCheck(env) {
 
   const summary = `${now} — samlet: ${overall}; ` +
     Object.entries(targets).map(([k, v]) => `${k}=${v.state}`).join(", ");
-  console.log(`[vakt] ${summary}`);
+  console.log(`[vakt ${VERSJON}] ${summary}`);
   return { overall, targets, alerts: alerts.length, at: now };
 }
 
@@ -393,7 +402,7 @@ export default {
       // Skill dette fra «feil nøkkel». Uten skillet står man og gjetter på
       // hvilken av to helt ulike feil man har.
       return tekst(
-        "TRIGGER_SECRET er ikke satt på denne Workeren.\n\n" +
+        `Vakt ${VERSJON}\n\nTRIGGER_SECRET er ikke satt på denne Workeren.\n\n` +
           "Cloudflare → kodo-vakt → Settings → Variables and Secrets → + Add,\n" +
           "type Secret, navn nøyaktig TRIGGER_SECRET. Husk Deploy etterpå.\n",
         401,
@@ -434,7 +443,7 @@ export default {
     ];
     if (!kandidater.some((k) => typeof k === "string" && k.trim() === fasit)) {
       return tekst(
-        "Nøkkelen stemmer ikke.\n\n" +
+        `Vakt ${VERSJON}\n\nNøkkelen stemmer ikke.\n\n` +
           "TRIGGER_SECRET er satt på Workeren, men verdien i adressen er en\n" +
           "annen. Vanligste årsak: verdien ble limt inn med et mellomrom eller\n" +
           "linjeskift, eller den inneholder tegn som må skrives om i en URL.\n\n" +
@@ -450,7 +459,8 @@ export default {
         ([k, v]) => `  ${k.padEnd(6)} ${v.state}${v.reason ? " — " + v.reason : ""}`,
       );
       return tekst(
-        `Sjekk kjørt ${out.at}\n\nSamlet: ${out.overall}\n${linjer.join("\n")}\n\n` +
+        `Vakt ${VERSJON} — sjekk kjørt ${out.at}\n\n` +
+          `Samlet: ${out.overall}\n${linjer.join("\n")}\n\n` +
           `Varsler sendt: ${out.alerts}\n\nSe status.kodovault.no om et minutt.\n`,
       );
     } catch (e) {
