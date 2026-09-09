@@ -150,6 +150,27 @@ function tid(iso) {
   });
 }
 
+/**
+ * Hvor lenge en tilstand har vart, som varighet og ikke som klokkeslett.
+ *
+ * Sto det «siden 20:36» ved siden av «Sist sjekket 22:19», leste de to som
+ * konkurrerende «sist oppdatert»-tider — og eieren av siden tolket det som at
+ * radene hang etter. En varighet kan ikke forveksles med et tidsstempel.
+ */
+function varighet(fra) {
+  if (!fra) return "";
+  const min = Math.floor((Date.now() - new Date(fra).getTime()) / 60000);
+  if (min < 1) return "nå nettopp";
+  if (min < 60) return `i ${min} min`;
+  const timer = Math.floor(min / 60);
+  if (timer < 24) {
+    const rest = min % 60;
+    return rest ? `i ${timer} t ${rest} min` : `i ${timer} t`;
+  }
+  const dager = Math.floor(timer / 24);
+  return `i ${dager} ${dager === 1 ? "dag" : "dager"}`;
+}
+
 function dagFarge(d) {
   if (!d || !d.checks) return "unknown";
   if (d.down > 0) return "down";
@@ -217,7 +238,7 @@ function tegnStatus(s) {
       </div>
       <div class="state">
         <b>${ORD_KORT[t.state] || t.state}</b>
-        ${t.state === "up" ? "siden " + tid(t.since) : (t.reason || "")}
+        ${t.state === "up" ? varighet(t.since) : (t.reason || "")}
       </div>
     </div>`).join("");
 }
@@ -241,12 +262,19 @@ function tegnHistorikk(h) {
 
   const totalt = dager.reduce((a, d) => a + (d.checks || 0), 0);
   const feil = dager.reduce((a, d) => a + (d.down || 0), 0);
+  const ustabile = dager.reduce((a, d) => a + (d.degraded || 0), 0);
   // Si hvor tynt grunnlaget er så lenge det er tynt. «100 % oppe» over én dag
   // er sant, men det er ikke det samme løftet som over nitti.
   document.getElementById("scale-from").textContent =
     dager.length < 90 ? `${dager.length} ${dager.length === 1 ? "dag" : "dager"} med data` : dager[0].date;
-  document.getElementById("scale-uptime").textContent =
-    totalt ? ((1 - feil / totalt) * 100).toFixed(2) + " % oppe" : "";
+  // Oppetid teller NEDE, ikke ustabilt. «100 % oppe» ved siden av en oransje
+  // søyle er derfor sant, men uforklarlig — søylen viser dagens verste
+  // tilstand, og en enkeltsjekk som feilet farger den uten å koste oppetid.
+  // Uten denne halvdelen må man holde musa over søylen for å skjønne det.
+  const oppe = totalt ? ((1 - feil / totalt) * 100).toFixed(2) + " % oppe" : "";
+  document.getElementById("scale-uptime").textContent = ustabile
+    ? `${oppe} · ${ustabile} ustabil${ustabile === 1 ? "" : "e"} sjekk${ustabile === 1 ? "" : "er"}`
+    : oppe;
 }
 
 function tegnHendelser(h) {
