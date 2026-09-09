@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-09.4";
+const VERSJON = "2026-09-09.5";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
