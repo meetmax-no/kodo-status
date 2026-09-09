@@ -9,8 +9,9 @@ name = "kodo-vakt"
 main = "src/index.mjs"
 compatibility_date = "2026-09-09"
 
-# AbortSignal.timeout og moderne standard-API-er.
-compatibility_flags = ["nodejs_compat"]
+# Ingen compatibility_flags: koden bruker bare standard web-API-er (fetch,
+# AbortSignal.timeout, Response.json). Ingenting fra Node. Det er derfor den
+# kan limes rett inn i Cloudflares nettleser-editor uten oppsett.
 
 [triggers]
 # Hvert 5. minutt. Gratisnivået gir 5 cron-triggere per konto; vi bruker én.
