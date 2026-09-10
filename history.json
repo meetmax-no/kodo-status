@@ -1,10 +1,27 @@
 [
   {
     "date": "2026-09-10",
-    "checks": 138,
+    "checks": 139,
     "degraded": 0,
     "down": 0,
-    "incidents": []
+    "incidents": [],
+    "bolker": [
+      {
+        "checks": 0,
+        "down": 0,
+        "degraded": 0
+      },
+      {
+        "checks": 1,
+        "down": 0,
+        "degraded": 0
+      },
+      {
+        "checks": 0,
+        "down": 0,
+        "degraded": 0
+      }
+    ]
   },
   {
     "date": "2026-09-09",
