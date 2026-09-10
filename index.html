@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Status — Ko | Do Vault</title>
-<meta name="description" content="Driftsstatus for Ko | Do Vault. Oppdateres hvert tiende minutt fra en vakt som står utenfor plattformen." />
+<meta name="description" content="Driftsstatus for Ko | Do Vault. Oppdateres hvert sjuende minutt fra en vakt som står utenfor plattformen." />
 <style>
   :root {
     --bg: #0e1116; --panel: #161b22; --line: #262d36;
@@ -95,7 +95,7 @@
 <div class="wrap">
   <header>
     <h1>Ko | Do · Vault <span>— status</span></h1>
-    <div class="sub">Oppdateres hvert tiende minutt av en vakt som kjører utenfor plattformen.</div>
+    <div class="sub">Oppdateres hvert sjuende minutt av en vakt som kjører utenfor plattformen.</div>
   </header>
 
   <div class="banner" id="banner">
@@ -209,12 +209,12 @@ async function hent(fil, reserve) {
 
 /**
  * Hvor gammel en sjekk får være før siden slutter å stå inne for den.
- * Vakten går hvert 10. minutt; tre tapte kjøringer på rad er ikke en hikke.
+ * Vakten går hvert 7. minutt; tre tapte kjøringer på rad er ikke en hikke.
  * Grensen MÅ følge intervallet. Sto den stille mens intervallet endret seg,
  * ville siden enten ropt «foreldet» etter halvannen tapt kjøring, eller stått
  * inne for tall som var timer gamle.
  */
-const FORELDET_MS = 31 * 60 * 1000;
+const FORELDET_MS = 22 * 60 * 1000;
 
 /**
  * Det farligste denne siden kan gjøre er å stå grønn på gamle tall. Stopper

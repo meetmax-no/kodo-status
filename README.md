@@ -36,8 +36,8 @@ uavhengige: podene på Vercel, vakten hos Cloudflare, siden på GitHub Pages.
 
 | Sjekkes | Hvordan |
 |---|---|
-| Administrasjon | `admin.kodovault.no/api/internal/health` hvert 10. min |
-| Kundepod (demo) | `demo.kodovault.no/api/health` hvert 10. min |
+| Administrasjon | `admin.kodovault.no/api/internal/health` hvert 7. min |
+| Kundepod (demo) | `demo.kodovault.no/api/health` hvert 7. min |
 
 **Kundepodene sjekkes ikke én for én herfra.** Dette repoet er offentlig, og en
 liste over hvem som er kunde hører ikke hjemme her. Sertifikatsveipet som dekker
@@ -61,9 +61,9 @@ grønn  →  ✕  →  ORANSJE  →  ✕  →  RØD → Telegram
 - **Rødt varsler på overgang, ikke per sjekk.** Seks timers nedetid er 72
   mislykkede sjekker. Du skal ha én melding når det blir rødt og én når det er
   tilbake.
-- Med 10 minutters intervall: rødt etter ca. 20 minutter. Intervallet er
-  valgt fordi GitHub Pages har en myk grense på 10 bygg i timen, og hver
-  kjøring commiter. Tolv i timen lå over; seks gir margin.
+- Med 7 minutters intervall: rødt etter ca. 14 minutter. `*/7` gir ni
+  kjøringer i timen, ikke 8,5 — cron nullstiller på timen, så de faller på
+  :00 :07 … :56 og deretter :00.
 
 ## Filene
 

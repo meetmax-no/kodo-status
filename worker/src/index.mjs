@@ -1,7 +1,7 @@
 /**
  * Ko | Do · Vault — D-149 (2026-09-09) — vakten, som Cloudflare Worker
  *
- * Hvert 10. minutt: spør helse-endepunktene, før strike-reglene, skriv
+ * Hvert 7. minutt: spør helse-endepunktene, før strike-reglene, skriv
  * status.json + history.json til `meetmax-no/kodo-status`, og varsel på
  * Telegram — kun på overgang.
  *
@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-10.9";
+const VERSJON = "2026-09-10.10";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -342,7 +342,7 @@ export async function runCheck(env) {
       state = misses === 1 ? "degraded" : "down";
       if (state === "down" && before.state !== "down") {
         // Rødt varsler på OVERGANG, ikke per sjekk. Seks timers nedetid med
-        // ti minutters intervall er 36 mislykkede sjekker; du skal ha én
+        // sju minutters intervall er 51 mislykkede sjekker; du skal ha én
         // melding når det blir rødt og én når det er tilbake.
         incidentFrom = before.incidentFrom ?? now;
         alerts.push(
@@ -455,7 +455,7 @@ export default {
    *
    * Nøkkel i URL havner i nettleserhistorikk og i logger, og det er en ekte
    * ulempe. Men den låser opp nøyaktig én ting: å kjøre en sjekk nå, som
-   * klokka gjør hvert tiende minutt uansett. Alternativet var en utløser bare
+   * klokka gjør hvert sjuende minutt uansett. Alternativet var en utløser bare
    * den med kommandolinje kunne bruke — altså ingen utløser for den som
    * faktisk drifter dette. Bruk en lang, tilfeldig verdi, og bytt den om den
    * kommer på avveie.
