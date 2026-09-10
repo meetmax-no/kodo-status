@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T12:14:29.000Z",
+  "generatedAt": "2026-09-10T12:21:29.013Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-10T12:14:29.000Z",
-      "lastCheck": "2026-09-10T12:14:29.000Z",
-      "responseMs": 1233,
+      "lastOk": "2026-09-10T12:21:29.013Z",
+      "lastCheck": "2026-09-10T12:21:29.013Z",
+      "responseMs": 755,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,11 +20,45 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-10T12:14:29.000Z",
-      "lastCheck": "2026-09-10T12:14:29.000Z",
-      "responseMs": 1197,
+      "lastOk": "2026-09-10T12:21:29.013Z",
+      "lastCheck": "2026-09-10T12:21:29.013Z",
+      "responseMs": 829,
       "reason": null,
       "incidentFrom": null
     }
-  }
+  },
+  "leverandorer": [
+    {
+      "navn": "Vercel",
+      "rolle": "podene",
+      "vert": "https://www.vercel-status.com",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "feil": null
+    },
+    {
+      "navn": "Upstash",
+      "rolle": "databasene",
+      "vert": "https://status.upstash.com",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "feil": null
+    },
+    {
+      "navn": "Cloudflare",
+      "rolle": "vakten",
+      "vert": "https://www.cloudflarestatus.com",
+      "indikator": "minor",
+      "beskrivelse": "Minor Service Outage",
+      "feil": null
+    },
+    {
+      "navn": "GitHub",
+      "rolle": "denne siden",
+      "vert": "https://www.githubstatus.com",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "feil": null
+    }
+  ]
 }
