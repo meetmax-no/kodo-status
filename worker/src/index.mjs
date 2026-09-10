@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-10.11";
+const VERSJON = "2026-09-10.12";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -99,6 +99,20 @@ const LEVERANDORER = [
 /** Kortere enn pod-sjekken: dette er kontekst, ikke måling. Henger det, skal
  *  resten av kjøringen ikke vente på det. */
 const LEVERANDOR_TIMEOUT_MS = 6_000;
+
+/**
+ * Hvor lenge en leverandørstatus gjenbrukes før vi spør på nytt.
+ *
+ * Målt 2026-09-10: de fire kallene løftet CPU fra 4–6 ms til 7–9 ms av de 10
+ * gratisnivået gir. Ikke JSON-parsingen — selve fetch-håndteringen i runtime.
+ * Ni av ti er for nært: sprekker en kjøring taket, dreper Cloudflare den uten
+ * retry og uten varsel, og vi ser det først som en foreldet side.
+ *
+ * En leverandørhendelse varer i timer, ikke i minutter. Å spørre hvert 7.
+ * minutt var overdrevet uansett. Med en halvtimes gjenbruk gjør bare hver
+ * fjerde kjøring de fire kallene, og resten leverer forrige svar videre.
+ */
+const LEVERANDOR_CACHE_MIN = 30;
 const HISTORY_DAYS = 90;
 
 const GH = "https://api.github.com";
@@ -255,6 +269,7 @@ async function lesLeverandor(l) {
       // er deres egen frie tekst og tas med som den er.
       indikator: json?.status?.indicator ?? null,
       beskrivelse: json?.status?.description ?? null,
+      hentet: new Date().toISOString(),
       feil: null,
     };
   } catch (e) {
@@ -264,9 +279,27 @@ async function lesLeverandor(l) {
       vert: l.vert,
       indikator: null,
       beskrivelse: null,
+      hentet: new Date().toISOString(),
       feil: e.name === "TimeoutError" ? "tidsavbrudd" : e.message,
     };
   }
+}
+
+/**
+ * Forrige leverandørsvar, hvis det er ferskt nok til å gjenbrukes.
+ *
+ * Tilstanden ligger allerede i `status.json`, som vi uansett leser hver
+ * kjøring — ingen ny lagring, ingen ny binding. Mangler `hentet`, er svaret
+ * fra før dette ble innført, og da spør vi på nytt.
+ */
+function ferskeLeverandorer(forrige) {
+  const liste = forrige?.leverandorer;
+  if (!Array.isArray(liste) || liste.length !== LEVERANDORER.length) return null;
+  const grense = Date.now() - LEVERANDOR_CACHE_MIN * 60_000;
+  const alleFerske = liste.every(
+    (l) => l?.hentet && new Date(l.hentet).getTime() > grense,
+  );
+  return alleFerske ? liste : null;
 }
 
 async function telegram(env, text) {
@@ -373,9 +406,12 @@ export async function runCheck(env) {
     readJson(env, HISTORY_FILE, []),
   ]);
 
+  // Podene spørres hver kjøring — det er jobben. Leverandørene gjenbrukes en
+  // halvtime, fordi de fire kallene koster CPU vi ikke har å gi bort.
+  const gjenbruk = ferskeLeverandorer(prev);
   const [results, leverandorer] = await Promise.all([
     Promise.all(TARGETS.map((t) => probe(t, env.INTERNAL_RPC_SECRET))),
-    Promise.all(LEVERANDORER.map(lesLeverandor)),
+    gjenbruk ?? Promise.all(LEVERANDORER.map(lesLeverandor)),
   ]);
 
   const alerts = [];
