@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-10.7";
+const VERSJON = "2026-09-10.8";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -244,15 +244,46 @@ const today = () => {
   return `${hent("year")}-${hent("month")}-${hent("day")}`;
 };
 
+/**
+ * Hvilken tredjedel av døgnet vi er i, norsk tid: 0 = 00–08, 1 = 08–16,
+ * 2 = 16–24.
+ *
+ * Døgnet deles fordi én ustabil sjekk av 288 ellers maler et helt døgn
+ * oransje på statussiden — 99,7 % av dagen var fin. Med bolker farges åtte
+ * timer, og «alltid 04:00» blir synlig som et mønster i stedet for å drukne.
+ */
+function bolkIndeks() {
+  const time = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Oslo",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date()),
+  );
+  return Math.min(2, Math.floor(time / 8));
+}
+
+const tomBolk = () => ({ checks: 0, down: 0, degraded: 0 });
+
 /** Dagens rad, nyest først. Oransje som aldri ble rød lagres likevel — «tre
  *  oransje denne uka, alltid 04:00» er et mønster, ikke støy. */
 function dayRow(history) {
   const date = today();
   let day = history.find((d) => d.date === date);
   if (!day) {
-    day = { date, checks: 0, degraded: 0, down: 0, incidents: [] };
+    day = {
+      date,
+      checks: 0,
+      degraded: 0,
+      down: 0,
+      bolker: [tomBolk(), tomBolk(), tomBolk()],
+      incidents: [],
+    };
     history.unshift(day);
   }
+  // Rader skrevet før bolkene fantes har dem ikke. Vi fyller dem ikke inn
+  // med gjetninger — dagen mangler oppløsningen, og siden skal si det.
+  if (!day.bolker) day.bolker = [tomBolk(), tomBolk(), tomBolk()];
   return day;
 }
 
@@ -339,10 +370,17 @@ export async function runCheck(env) {
   }
 
   const day = dayRow(history);
+  const bolk = day.bolker[bolkIndeks()];
   day.checks += 1;
+  bolk.checks += 1;
   const values = Object.values(targets);
-  if (values.some((t) => t.state === "down")) day.down += 1;
-  else if (values.some((t) => t.state === "degraded")) day.degraded += 1;
+  if (values.some((t) => t.state === "down")) {
+    day.down += 1;
+    bolk.down += 1;
+  } else if (values.some((t) => t.state === "degraded")) {
+    day.degraded += 1;
+    bolk.degraded += 1;
+  }
 
   const overall = values.some((t) => t.state === "down")
     ? "down"

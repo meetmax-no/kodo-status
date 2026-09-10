@@ -61,10 +61,20 @@
   .note p:last-child { margin-bottom: 0; }
   .note b { color: var(--ink); font-weight: 600; }
 
-  .bars { display: flex; gap: 2px; align-items: flex-end; height: 40px; justify-content: flex-start; }
-  /* max-width gjør at få dager blir smale søyler til venstre i stedet for
-     én bred flate som leses som en strek. Ved 90 dager binder den ikke. */
-  .bar { flex: 1 1 0; min-width: 2px; max-width: 9px; height: 100%; border-radius: 2px; background: var(--unknown); }
+  /* Døgnet vises som tre søyler — 00–08, 08–16, 16–24 — fordi én ustabil
+     sjekk av 288 ellers malte et helt døgn oransje. 90 dager blir 270 søyler,
+     som ikke får plass. Vi krymper dem derfor ikke til hårstreker, men lar
+     stripa scrolle: full oppløsning beholdes, og de ferskeste dagene vises. */
+  .bars-scroll {
+    overflow-x: auto; overflow-y: hidden; padding-bottom: 4px;
+    scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  }
+  .bars { display: flex; gap: 5px; align-items: flex-end; height: 40px; width: max-content; }
+  .dag { display: flex; gap: 1px; }
+  .bar { width: 5px; height: 40px; border-radius: 2px; background: var(--unknown); }
+  /* Dager fra før bolkene fantes: ett bredt felt i stedet for tre like.
+     Vi vet ikke hvilken tredjedel som var dårlig, og skal ikke late som. */
+  .bar.grov { width: 17px; }
   .bar.up { background: var(--up); }
   .bar.degraded { background: var(--degraded); }
   .bar.down { background: var(--down); }
@@ -101,7 +111,7 @@
 
   <h2>Siste 90 dager</h2>
   <div id="history-wrap">
-    <div class="bars" id="bars"></div>
+    <div class="bars-scroll" id="bars-scroll"><div class="bars" id="bars"></div></div>
     <div class="scale"><span id="scale-from">90 dager siden</span><span id="scale-uptime"></span><span>i dag</span></div>
   </div>
 
@@ -169,6 +179,17 @@ function varighet(fra) {
   }
   const dager = Math.floor(timer / 24);
   return `i ${dager} ${dager === 1 ? "dag" : "dager"}`;
+}
+
+/** Klokkeslettene bolkene dekker, i norsk tid. */
+const BOLKNAVN = ["00–08", "08–16", "16–24"];
+
+/** Én bolk farges som døgnet: verste tilstand vinner, ingen data er grå. */
+function bolkFarge(b) {
+  if (!b || !b.checks) return "unknown";
+  if (b.down > 0) return "down";
+  if (b.degraded > 0) return "degraded";
+  return "up";
 }
 
 function dagFarge(d) {
@@ -253,12 +274,30 @@ function tegnHistorikk(h) {
     return;
   }
   bars.innerHTML = dager.map((d) => {
-    const f = dagFarge(d);
-    const tekst = d.checks
-      ? `${d.date}: ${d.checks} sjekker, ${d.down} nede, ${d.degraded} ustabile`
-      : `${d.date}: ingen data`;
-    return `<div class="bar ${f}" title="${tekst}"></div>`;
+    const dato = new Date(d.date + "T12:00:00Z").toLocaleDateString("nb-NO", {
+      day: "2-digit", month: "short",
+    });
+    // Rader fra før bolkene fantes har ingen tredjedeler. Ett bredt felt sier
+    // ærlig at vi bare kjenner døgnet, i stedet for å farge tre like søyler
+    // og antyde at hele dagen var slik.
+    if (!Array.isArray(d.bolker)) {
+      const tekst = d.checks
+        ? `${dato} (kun døgn): ${d.checks} sjekker, ${d.down} nede, ${d.degraded} ustabile`
+        : `${dato}: ingen data`;
+      return `<div class="dag"><div class="bar grov ${dagFarge(d)}" title="${tekst}"></div></div>`;
+    }
+    const søyler = d.bolker.map((b, i) => {
+      const tekst = b.checks
+        ? `${dato} ${BOLKNAVN[i]}: ${b.checks} sjekker, ${b.down} nede, ${b.degraded} ustabile`
+        : `${dato} ${BOLKNAVN[i]}: ingen data`;
+      return `<div class="bar ${bolkFarge(b)}" title="${tekst}"></div>`;
+    }).join("");
+    return `<div class="dag">${søyler}</div>`;
   }).join("");
+
+  // Start ytterst til høyre: det ferskeste er det man ser etter først.
+  const scroll = document.getElementById("bars-scroll");
+  scroll.scrollLeft = scroll.scrollWidth;
 
   const totalt = dager.reduce((a, d) => a + (d.checks || 0), 0);
   const feil = dager.reduce((a, d) => a + (d.down || 0), 0);
