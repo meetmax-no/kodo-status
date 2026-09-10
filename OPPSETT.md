@@ -8,7 +8,7 @@ Sett av ti minutter. Du gjør dette én gang.
 
 ## Hva du faktisk setter opp
 
-Vakten er et lite program som spør to av podene våre «lever du?» hvert femte
+Vakten er et lite program som spør to av podene våre «lever du?» hvert tiende
 minutt, og skriver svaret til dette repoet. Statussiden leser det svaret.
 
 Programmet må ligge et sted som kan kjøre det på klokkeslett. Vi prøvde
@@ -109,10 +109,10 @@ Uten dette kjører programmet aldri av seg selv.
 
 1. Fortsatt under **Settings**
 2. Finn **Trigger Events** → **Cron Triggers** → **+ Add**
-3. Skriv inn: `*/5 * * * *`
+3. Skriv inn: `*/10 * * * *`
 4. **Add** → **Deploy**
 
-Det betyr «hvert femte minutt».
+Det betyr «hvert tiende minutt».
 
 ---
 
@@ -162,7 +162,7 @@ en utgave fra før versjonsmerkingen — altså gammel kode.
 
 > Nøkkelen i adressen havner i nettleserhistorikken. Det er en bevisst
 > avveining: den låser opp én ting — å kjøre en sjekk nå, som klokka gjør
-> hvert femte minutt uansett. Bruk en lang, tilfeldig verdi, og bytt den om
+> hvert tiende minutt uansett. Bruk en lang, tilfeldig verdi, og bytt den om
 > den kommer på avveie.
 
 **Vil du se det innenfra:** klikk **Logs** på Worker-siden. Der kommer linjer

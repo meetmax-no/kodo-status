@@ -14,8 +14,12 @@ compatibility_date = "2026-09-09"
 # kan limes rett inn i Cloudflares nettleser-editor uten oppsett.
 
 [triggers]
-# Hvert 5. minutt. Gratisnivået gir 5 cron-triggere per konto; vi bruker én.
-crons = ["*/5 * * * *"]
+# Hvert 10. minutt, ikke hvert 5. GitHub Pages har en myk grense på 10 bygg i
+# timen, og hver kjøring commiter — tolv i timen lå 20 % over. Seks gir margin.
+# Prisen er at rødt kommer etter ~20 minutter i stedet for ~10, og det er
+# irrelevant: en vakt er til for at ingen skal ligge våken, ikke for sekunder.
+# Gratisnivået gir 5 cron-triggere per konto; vi bruker én.
+crons = ["*/10 * * * *"]
 
 [observability]
 enabled = true
