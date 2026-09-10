@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-10",
+    "checks": 1,
+    "degraded": 0,
+    "down": 0,
+    "incidents": []
+  },
+  {
     "date": "2026-09-09",
     "checks": 15,
     "degraded": 1,
