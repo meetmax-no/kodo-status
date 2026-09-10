@@ -54,7 +54,13 @@
   .row .name { font-weight: 500; }
   .row .desc { color: var(--faint); font-size: 12.5px; margin-top: 1px; }
   .row .state { margin-left: auto; text-align: right; font-size: 13px; color: var(--dim); flex: none; }
-  .row .state b { display: block; color: var(--ink); font-weight: 500; }
+  .row .state b { display: block; font-weight: 500; }
+  /* Tilstanden bæres av fargen OG av ordet — aldri av fargen alene. Den som
+     ikke skiller grønt fra oransje leser fortsatt «I drift» og «Ustabilt». */
+  .t-up { color: var(--up); }
+  .t-degraded { color: var(--degraded); }
+  .t-down { color: var(--down); }
+  .t-unknown { color: var(--dim); }
 
   .kilde { color: var(--faint); font-size: 11.5px; font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 8px; }
   .row a.navn { color: inherit; text-decoration: none; }
@@ -249,13 +255,17 @@ function sjekkForeldet(s) {
   boks.hidden = false;
   // Prikken skal ikke stå grønn over en tekst som sier at vi ikke vet.
   document.getElementById("banner-dot").className = "dot unknown";
-  document.getElementById("banner-text").textContent = "Ukjent — ingen fersk sjekk";
+  const overskrift = document.getElementById("banner-text");
+  overskrift.textContent = "Ukjent — ingen fersk sjekk";
+  overskrift.className = "t-unknown";
 }
 
 function tegnStatus(s) {
   const tilstand = s.overall || "unknown";
   document.getElementById("banner-dot").className = "dot " + tilstand;
-  document.getElementById("banner-text").textContent = ORD[tilstand] || ORD.unknown;
+  const overskrift = document.getElementById("banner-text");
+  overskrift.textContent = ORD[tilstand] || ORD.unknown;
+  overskrift.className = "t-" + tilstand;
   document.getElementById("banner-when").textContent =
     s.generatedAt ? "Sist sjekket " + tid(s.generatedAt) : "Ingen sjekk registrert ennå";
 
@@ -273,7 +283,7 @@ function tegnStatus(s) {
         <div class="desc">${t.detail || ""}</div>
       </div>
       <div class="state">
-        <b>${ORD_KORT[t.state] || t.state}</b>
+        <b class="t-${t.state}">${ORD_KORT[t.state] || t.state}</b>
         ${t.state === "up" ? varighet(t.since) : (t.reason || "")}
       </div>
     </div>`).join("");
@@ -320,7 +330,7 @@ function tegnLeverandorer(liste) {
           <div class="desc">${l.rolle}</div>
         </div>
         <div class="state">
-          <b>${tekst}</b>
+          <b class="t-${farge}">${tekst}</b>
           ${l.feil || ""}
         </div>
       </div>`;
