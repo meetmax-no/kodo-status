@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-10.10";
+const VERSJON = "2026-09-10.11";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -72,6 +72,33 @@ const TARGETS = [
 ];
 
 const TIMEOUT_MS = 15_000;
+
+/**
+ * Leverandørene plattformen hviler på — og deres EGEN statusmelding.
+ *
+ * Vi måler dem ikke. Vi kan ikke: vi ser våre egne poder, ikke Vercel som
+ * plattform. Å sette vår grønne prikk ved siden av «Vercel» ville vært en
+ * påstand vi ikke kan stå for, av samme slag som «Live» i bunnteksten på
+ * kodovault.no. Vi videreformidler i stedet det de selv publiserer.
+ *
+ * Nytten er konkret: 2026-09-09 sto Cloudflares cron nede i tre timer, og vi
+ * brukte førti minutter på å utelukke vår egen kode. Cloudflare sa det selv
+ * hele tiden, på nøyaktig dette endepunktet. Nå står det på vår side.
+ *
+ * Alle fire bruker Statuspage, som svarer `{status:{indicator,description}}`.
+ * Ingen nøkkel, ingen ny leverandør — dette er kilder vi allerede er
+ * avhengige av.
+ */
+const LEVERANDORER = [
+  { navn: "Vercel", rolle: "podene", vert: "https://www.vercel-status.com" },
+  { navn: "Upstash", rolle: "databasene", vert: "https://status.upstash.com" },
+  { navn: "Cloudflare", rolle: "vakten", vert: "https://www.cloudflarestatus.com" },
+  { navn: "GitHub", rolle: "denne siden", vert: "https://www.githubstatus.com" },
+];
+
+/** Kortere enn pod-sjekken: dette er kontekst, ikke måling. Henger det, skal
+ *  resten av kjøringen ikke vente på det. */
+const LEVERANDOR_TIMEOUT_MS = 6_000;
 const HISTORY_DAYS = 90;
 
 const GH = "https://api.github.com";
@@ -204,6 +231,44 @@ async function probe(target, bearer) {
   }
 }
 
+/**
+ * Én leverandørs egen status. Feiler den, sier vi «vet ikke» — vi gjetter
+ * aldri på vegne av noen andre.
+ *
+ * Dette må ALDRI velte en kjøring: leverandørstatus er kontekst, mens
+ * pod-sjekken er jobben. Derfor egen try/catch og kort tidsavbrudd.
+ */
+async function lesLeverandor(l) {
+  try {
+    const res = await fetch(`${l.vert}/api/v2/status.json`, {
+      signal: AbortSignal.timeout(LEVERANDOR_TIMEOUT_MS),
+      cf: { cacheTtl: 60 },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return {
+      navn: l.navn,
+      rolle: l.rolle,
+      vert: l.vert,
+      // `indicator` er et fast vokabular hos Statuspage: none | minor |
+      // major | critical | maintenance. Siden oversetter det; `beskrivelse`
+      // er deres egen frie tekst og tas med som den er.
+      indikator: json?.status?.indicator ?? null,
+      beskrivelse: json?.status?.description ?? null,
+      feil: null,
+    };
+  } catch (e) {
+    return {
+      navn: l.navn,
+      rolle: l.rolle,
+      vert: l.vert,
+      indikator: null,
+      beskrivelse: null,
+      feil: e.name === "TimeoutError" ? "tidsavbrudd" : e.message,
+    };
+  }
+}
+
 async function telegram(env, text) {
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
     console.log("[vakt] Telegram ikke konfigurert — hopper over varsel");
@@ -308,7 +373,10 @@ export async function runCheck(env) {
     readJson(env, HISTORY_FILE, []),
   ]);
 
-  const results = await Promise.all(TARGETS.map((t) => probe(t, env.INTERNAL_RPC_SECRET)));
+  const [results, leverandorer] = await Promise.all([
+    Promise.all(TARGETS.map((t) => probe(t, env.INTERNAL_RPC_SECRET))),
+    Promise.all(LEVERANDORER.map(lesLeverandor)),
+  ]);
 
   const alerts = [];
   const targets = {};
@@ -391,7 +459,11 @@ export async function runCheck(env) {
   await commitFiles(
     env,
     {
-      [STATUS_FILE]: JSON.stringify({ generatedAt: now, overall, targets }, null, 2) + "\n",
+      // `overall` bygger KUN på våre egne poder. En mindre hendelse hos
+      // Cloudflare betyr ikke at vaulten er nede, og skal ikke farge vår
+      // samlede status. Leverandørene står ved siden av, ikke i.
+      [STATUS_FILE]:
+        JSON.stringify({ generatedAt: now, overall, targets, leverandorer }, null, 2) + "\n",
       [HISTORY_FILE]: JSON.stringify(history.slice(0, HISTORY_DAYS), null, 2) + "\n",
     },
     `vakt: ${now.slice(0, 16).replace("T", " ")} UTC`,

@@ -56,6 +56,9 @@
   .row .state { margin-left: auto; text-align: right; font-size: 13px; color: var(--dim); flex: none; }
   .row .state b { display: block; color: var(--ink); font-weight: 500; }
 
+  .kilde { color: var(--faint); font-size: 11.5px; font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 8px; }
+  .row a.navn { color: inherit; text-decoration: none; }
+  .row a.navn:hover { text-decoration: underline; }
   .note { border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; background: transparent; }
   .note p { margin: 0 0 9px; font-size: 13px; color: var(--dim); }
   .note p:last-child { margin-bottom: 0; }
@@ -109,6 +112,9 @@
   <h2>Tjenester</h2>
   <div class="card" id="targets"><div class="empty">Henter…</div></div>
 
+  <h2>Leverandører <span class="kilde">deres egen melding, ikke vår måling</span></h2>
+  <div class="card" id="leverandorer"><div class="empty">Henter…</div></div>
+
   <h2>Siste 90 dager</h2>
   <div id="history-wrap">
     <div class="bars-scroll" id="bars-scroll"><div class="bars" id="bars"></div></div>
@@ -129,6 +135,12 @@
       Sertifikatene på hver pod sveipes daglig og varsles fjorten dager før
       utløp. Det sveipet kjører internt, fordi listen over hvem som er kunde
       ikke hører hjemme på en offentlig side.
+    </p>
+    <p>
+      <b>Leverandørlinjene er ikke våre målinger.</b> De er hentet fra
+      statussidene til Vercel, Upstash, Cloudflare og GitHub, og gjengir det
+      de selv melder. Vi overvåker dem ikke — vi videreformidler, så du vet
+      hvor du skal se videre.
     </p>
     <p>
       Noe galt hos deg mens alt står grønt her?
@@ -267,6 +279,54 @@ function tegnStatus(s) {
     </div>`).join("");
 }
 
+/**
+ * Statuspage bruker et fast vokabular for `indicator`. Vi oversetter det —
+ * en enum, ikke en omskriving — og lar fargen følge alvorlighetsgraden.
+ *
+ * Leverandørens egen `beskrivelse` lagres, men vises ikke: «All Systems
+ * Operational» rett under «Alle systemer i drift» er samme setning to ganger.
+ * Vil man ha detaljene, er navnet en lenke til deres egen statusside.
+ */
+const LEV_TILSTAND = {
+  none: ["up", "Alle systemer i drift"],
+  minor: ["degraded", "Mindre driftsforstyrrelse"],
+  major: ["down", "Større driftsforstyrrelse"],
+  critical: ["down", "Kritisk driftsavbrudd"],
+  maintenance: ["unknown", "Planlagt vedlikehold"],
+};
+
+/**
+ * Leverandørene vi hviler på, med deres egne ord.
+ *
+ * Vi måler dem ikke, og siden sier det i overskriften. Poenget er å gi den
+ * som ser noe rart et sted å se videre — 2026-09-09 sto Cloudflares cron
+ * nede i tre timer mens vi lette i vår egen kode.
+ */
+function tegnLeverandorer(liste) {
+  const boks = document.getElementById("leverandorer");
+  if (!Array.isArray(liste) || liste.length === 0) {
+    boks.innerHTML = '<div class="empty">Ingen leverandørstatus hentet ennå.</div>';
+    return;
+  }
+  boks.innerHTML = liste.map((l) => {
+    const [farge, tekst] = l.feil
+      ? ["unknown", "Kunne ikke leses"]
+      : (LEV_TILSTAND[l.indikator] ?? ["unknown", "Ukjent"]);
+    return `
+      <div class="row">
+        <span class="dot ${farge}"></span>
+        <div>
+          <div class="name"><a class="navn" href="${l.vert}" target="_blank" rel="noopener noreferrer">${l.navn}</a></div>
+          <div class="desc">${l.rolle}</div>
+        </div>
+        <div class="state">
+          <b>${tekst}</b>
+          ${l.feil || ""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
 function tegnHistorikk(h) {
   // Nyest først i filen; vi tegner eldst til venstre.
   const dager = h.slice(0, 90).reverse();
@@ -353,6 +413,7 @@ function tegnHendelser(h) {
   ]);
   tegnStatus(s);
   sjekkForeldet(s);
+  tegnLeverandorer(s.leverandorer);
   tegnHistorikk(h);
   tegnHendelser(h);
 })();

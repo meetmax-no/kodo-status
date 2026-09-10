@@ -39,6 +39,12 @@ uavhengige: podene på Vercel, vakten hos Cloudflare, siden på GitHub Pages.
 | Administrasjon | `admin.kodovault.no/api/internal/health` hvert 7. min |
 | Kundepod (demo) | `demo.kodovault.no/api/health` hvert 7. min |
 
+Siden viser i tillegg **leverandørenes egen statusmelding** — Vercel,
+Upstash, Cloudflare og GitHub — hentet fra Statuspage-endepunktene deres. Det
+er ikke våre målinger, og siden sier det. Nytten er konkret: 2026-09-09 sto
+Cloudflares cron nede i tre timer mens vi lette i vår egen kode. Cloudflare sa
+det selv hele tiden, på nøyaktig det endepunktet.
+
 **Kundepodene sjekkes ikke én for én herfra.** Dette repoet er offentlig, og en
 liste over hvem som er kunde hører ikke hjemme her. Sertifikatsveipet som dekker
 hver pod kjører på admin, og svaret går til Telegram — aldri hit.
