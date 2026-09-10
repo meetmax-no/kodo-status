@@ -210,8 +210,9 @@ async function hent(fil, reserve) {
 /**
  * Hvor gammel en sjekk får være før siden slutter å stå inne for den.
  * Vakten går hvert 10. minutt; tre tapte kjøringer på rad er ikke en hikke.
- * Grensen MÅ følge intervallet — sto den på 16 minutter da vakten gikk over
- * til ti, ville siden ropt «foreldet» etter halvannen tapt kjøring.
+ * Grensen MÅ følge intervallet. Sto den stille mens intervallet endret seg,
+ * ville siden enten ropt «foreldet» etter halvannen tapt kjøring, eller stått
+ * inne for tall som var timer gamle.
  */
 const FORELDET_MS = 31 * 60 * 1000;
 
@@ -279,12 +280,20 @@ function tegnHistorikk(h) {
     const dato = new Date(d.date + "T12:00:00Z").toLocaleDateString("nb-NO", {
       day: "2-digit", month: "short",
     });
-    // Rader fra før bolkene fantes har ingen tredjedeler. Ett bredt felt sier
-    // ærlig at vi bare kjenner døgnet, i stedet for å farge tre like søyler
-    // og antyde at hele dagen var slik.
-    if (!Array.isArray(d.bolker)) {
+    // Ett bredt felt når vi bare kjenner døgnet — ærligere enn tre like søyler
+    // som antyder at hele dagen var slik.
+    //
+    // To tilfeller havner her. Rader fra før bolkene fantes har dem ikke i det
+    // hele tatt. Og dagen bolkene ble tatt i bruk har dem, men de dekker bare
+    // kjøringene etter utrullingen: 3 av 141 den 10. september. Da sto 00–08
+    // grått, som leses som et hull i overvåkingen — men vi overvåket hele
+    // natten, vi telte bare ikke hvor. Summen avslører forskjellen.
+    const bolkSum = Array.isArray(d.bolker)
+      ? d.bolker.reduce((a, b) => a + (b.checks || 0), 0)
+      : -1;
+    if (bolkSum !== d.checks) {
       const tekst = d.checks
-        ? `${dato} (kun døgn): ${d.checks} sjekker, ${d.down} nede, ${d.degraded} ustabile`
+        ? `${dato} — kun døgnoppløsning: ${d.checks} sjekker, ${d.down} nede, ${d.degraded} ustabile`
         : `${dato}: ingen data`;
       return `<div class="dag"><div class="bar grov ${dagFarge(d)}" title="${tekst}"></div></div>`;
     }
