@@ -81,9 +81,13 @@
   .bars { display: flex; gap: 5px; align-items: flex-end; height: 40px; width: max-content; }
   .dag { display: flex; gap: 1px; }
   .bar { width: 5px; height: 40px; border-radius: 2px; background: var(--unknown); }
-  /* Dager fra før bolkene fantes: ett bredt felt i stedet for tre like.
-     Vi vet ikke hvilken tredjedel som var dårlig, og skal ikke late som. */
-  .bar.grov { width: 17px; }
+  /* Dager vi bare kjenner på døgnnivå: ett bredt felt i stedet for tre like.
+     Vi vet ikke hvilken tredjedel som var dårlig, og skal ikke late som.
+
+     Dempet, fordi feltet er nøyaktig like bredt som tre søyler til sammen —
+     uten forskjell i uttrykk leste det som «én søyle» og ikke som «grovere
+     oppløsning». Blass = vi vet mindre om denne dagen. */
+  .bar.grov { width: 17px; opacity: 0.45; }
   .bar.up { background: var(--up); }
   .bar.degraded { background: var(--degraded); }
   .bar.down { background: var(--down); }
