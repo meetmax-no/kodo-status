@@ -37,7 +37,7 @@
  * og feilsøkingen gikk på alt annet enn det. Nummeret vises nå i svaret fra
  * den manuelle kjøringen og i loggen.
  */
-const VERSJON = "2026-09-09.6";
+const VERSJON = "2026-09-10.7";
 
 const OWNER = "meetmax-no";
 const REPO = "kodo-status";
@@ -222,7 +222,27 @@ async function telegram(env, text) {
   if (!res.ok) console.error(`[vakt] Telegram ${res.status}: ${await res.text()}`);
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+/**
+ * Dagens dato i NORSK tid, ikke UTC.
+ *
+ * `toISOString()` gir UTC-datoen, så døgnet skiftet 02:00 norsk sommertid.
+ * Søylene på statussiden rullet da over midt på natten, og morgenrapportens
+ * «natten» begynte klokka to. Ryker noe 00:30, havnet det i gårsdagens søyle.
+ *
+ * Mike leser siden som norske kalenderdager. Da skal den være det.
+ * `Intl` med `Europe/Oslo` håndterer sommertid av seg selv — ingen offset å
+ * huske å endre to ganger i året.
+ */
+const today = () => {
+  const deler = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Oslo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const hent = (type) => deler.find((d) => d.type === type).value;
+  return `${hent("year")}-${hent("month")}-${hent("day")}`;
+};
 
 /** Dagens rad, nyest først. Oransje som aldri ble rød lagres likevel — «tre
  *  oransje denne uka, alltid 04:00» er et mønster, ikke støy. */
