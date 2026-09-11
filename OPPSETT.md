@@ -186,3 +186,17 @@ mens noe er nede, er verre enn ingen side.
 
 Lag likevel et nytt passord før datoen, og bytt det ut i Del 3. Varslene er et
 sikkerhetsnett, ikke en plan.
+
+## Grenbeskyttelse — og den ene knappen du aldri må trykke
+
+Regelsettet **«Main - Status»** står Active på `main` (opprettet 2026-09-11).
+To regler: **Restrict deletions** og **Block force pushes**. Bypass-lista er tom.
+
+Vakten er upåvirket. Den skriver med `force: false` (`worker/src/index.mjs`), så
+den gjør en helt vanlig fast-forward. Bekreftet i drift: regelsettet ble laget
+07:51 UTC, og kjøringen 07:56:45 gikk rett gjennom.
+
+**Men ikke huk av `Restrict updates`.** Den tillater kun skriving fra aktører på
+bypass-lista — og vakten står ikke der. Da stopper hvert eneste målepunkt, og du
+ville fått det servert som «vakten er død» i morgenrapporten i stedet for det
+det egentlig var: en avkrysning i GitHub.
