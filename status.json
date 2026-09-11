@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T23:00:34.853Z",
+  "generatedAt": "2026-09-11T23:07:29.262Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-11T23:00:34.853Z",
-      "lastCheck": "2026-09-11T23:00:34.853Z",
-      "responseMs": 549,
+      "lastOk": "2026-09-11T23:07:29.262Z",
+      "lastCheck": "2026-09-11T23:07:29.262Z",
+      "responseMs": 664,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-11T23:00:34.853Z",
-      "lastCheck": "2026-09-11T23:00:34.853Z",
-      "responseMs": 626,
+      "lastOk": "2026-09-11T23:07:29.262Z",
+      "lastCheck": "2026-09-11T23:07:29.262Z",
+      "responseMs": 444,
       "reason": null,
       "incidentFrom": null
     }
