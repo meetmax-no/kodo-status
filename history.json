@@ -1,12 +1,12 @@
 [
   {
     "date": "2026-09-13",
-    "checks": 4,
+    "checks": 5,
     "degraded": 0,
     "down": 0,
     "bolker": [
       {
-        "checks": 4,
+        "checks": 5,
         "down": 0,
         "degraded": 0
       },
