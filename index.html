@@ -94,6 +94,20 @@
   .bar.down { background: var(--down); }
   .scale { display: flex; justify-content: space-between; color: var(--faint); font-size: 11.5px; margin-top: 8px; }
 
+  /* Tallene står midtstilt under sin egen overskrift; bare periodenavnet
+     er venstrestilt. tabular-nums gjør at sifrene står i kolonne selv når
+     tallene har ulik bredde — 206 og 1028 skal ikke danse. */
+  table.kontroller { width: 100%; border-collapse: collapse; }
+  table.kontroller th, table.kontroller td { padding: 13px 16px; border-bottom: 1px solid var(--line); text-align: center; }
+  table.kontroller tr:last-child td { border-bottom: 0; }
+  table.kontroller th { color: var(--dim); font-size: 12.5px; font-weight: 500; line-height: 1.35; }
+  table.kontroller th .under { display: block; color: var(--faint); font-size: 11px; font-weight: 400; margin-top: 2px; }
+  table.kontroller td { font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  table.kontroller th:first-child, table.kontroller td:first-child { text-align: left; padding-left: 20px; }
+  table.kontroller td:first-child { font-size: 13.5px; color: var(--dim); }
+  .nedetid { margin-top: 10px; color: var(--faint); font-size: 12px; }
+  .nedetid b { color: var(--dim); font-weight: 600; }
+
   .incident { padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
   .incident:last-child { border-bottom: 0; }
   .incident .head { display: flex; gap: 8px; align-items: center; }
@@ -125,6 +139,10 @@
     <div class="bars-scroll" id="bars-scroll"><div class="bars" id="bars"></div></div>
     <div class="scale"><span id="scale-from">90 dager siden</span><span id="scale-uptime"></span><span>i dag</span></div>
   </div>
+
+  <h2>Kontroller</h2>
+  <div class="card" id="kontroller"><div class="empty">Henter…</div></div>
+  <div class="nedetid" id="nedetid" hidden></div>
 
   <h2>Tjenester <span class="kilde">tid siden forrige tilstandsendring — ikke tjenestens totale oppetid</span></h2>
   <div class="card" id="targets"><div class="empty">Henter…</div></div>
@@ -428,6 +446,78 @@ function tegnHistorikk(h) {
     : oppe;
 }
 
+/**
+ * Samlet eksponering per tilstand — noe annet enn «i drift i 4 d 18 t», som
+ * bare er hvor lenge NÅVÆRENDE tilstand har vart.
+ *
+ * Enheten er KONTROLLER, ikke timer. Vakten teller kjøringer, én hvert
+ * sjuende minutt, og lagrer ingen start- og sluttid for oransje. Regnet vi om
+ * til timer, ville hver kontroll blitt til 6,67 minutter av døgnet — og den
+ * ene ustabile kontrollen vi har, ville stått som «6,7 minutter ustabilt»
+ * enda vi ikke vet om det varte ti sekunder eller seks minutter. Vi oppgir
+ * det vi måler.
+ *
+ * Klokketid oppgis derfor KUN for nede, under tabellen, regnet ut av
+ * hendelsenes egne `from`/`to` — der er den eksakt.
+ */
+function tegnKontroller(h) {
+  const dager = Array.isArray(h) ? h : [];
+  const boks = document.getElementById("kontroller");
+  if (!dager.length) {
+    boks.innerHTML = '<div class="empty">Vakten har ikke kjørt ennå.</div>';
+    return;
+  }
+
+  const summer = (rader) => {
+    const kontroller = rader.reduce((a, d) => a + (d.checks || 0), 0);
+    const nede = rader.reduce((a, d) => a + (d.down || 0), 0);
+    const ustabilt = rader.reduce((a, d) => a + (d.degraded || 0), 0);
+    return { kontroller, nede, ustabilt, drift: kontroller - nede - ustabilt };
+  };
+
+  // history.json ligger nyest først.
+  const perioder = [
+    ["I dag", dager.slice(0, 1)],
+    ["Siste 7 dager", dager.slice(0, 7)],
+    [`Hele perioden · ${dager.length} ${dager.length === 1 ? "dag" : "dager"}`, dager],
+  ];
+
+  boks.innerHTML = `<table class="kontroller">
+    <thead><tr>
+      <th>Periode</th>
+      <th>Antall kontroller<span class="under">hvert 7. minutt</span></th>
+      <th class="t-up">I drift</th>
+      <th class="t-degraded">Ustabilt</th>
+      <th class="t-down">Nede</th>
+    </tr></thead>
+    <tbody>${perioder.map(([navn, rader]) => {
+      const t = summer(rader);
+      return `<tr>
+        <td>${navn}</td>
+        <td>${t.kontroller}</td>
+        <td>${t.drift}</td>
+        <td>${t.ustabilt}</td>
+        <td>${t.nede}</td>
+      </tr>`;
+    }).join("")}</tbody>
+  </table>`;
+
+  // Nedetid i klokketid. En hendelse uten `to` pågår nå.
+  const hendelser = dager.flatMap((d) => d.incidents || []).filter((i) => i.from);
+  const minutter = hendelser.reduce((a, i) => {
+    const slutt = i.to ? new Date(i.to).getTime() : Date.now();
+    return a + Math.max(0, Math.round((slutt - new Date(i.from).getTime()) / 60000));
+  }, 0);
+  const linje = document.getElementById("nedetid");
+  const timer = Math.floor(minutter / 60);
+  const rest = minutter % 60;
+  const tekst = minutter === 0 ? "0 minutter" : timer ? `${timer} t ${rest} min` : `${rest} min`;
+  linje.innerHTML = `Samlet nedetid i perioden: <b>${tekst}</b>`
+    + ` · ${hendelser.length} ${hendelser.length === 1 ? "hendelse" : "hendelser"}`
+    + ` — dette er den eneste tilstanden vi kjenner på klokkeslett.`;
+  linje.hidden = false;
+}
+
 function tegnHendelser(h) {
   const alle = h.flatMap((d) => (d.incidents || []).map((i) => ({ ...i, date: d.date })));
   const boks = document.getElementById("incidents");
@@ -456,6 +546,7 @@ function tegnHendelser(h) {
   sjekkForeldet(s);
   tegnLeverandorer(s.leverandorer);
   tegnHistorikk(h);
+  tegnKontroller(h);
   tegnHendelser(h);
 })();
 </script>
