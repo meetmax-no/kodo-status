@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Status — Ko | Do Vault</title>
 <meta name="description" content="Driftsstatus for Ko | Do Vault. Oppdateres hvert sjuende minutt fra en vakt som står utenfor plattformen." />
+<!-- Faviconet bærer tilstanden. Denne er den nøytrale grå — JS bytter
+     den til grønn/oransje/rød når status.json er lest. Den ligger her
+     som reserve slik at fanen har et ikon før scriptet har kjørt, og
+     også hvis JS aldri kjører. Ingen egen fil: hele siden er én fil. -->
+<link rel="icon" id="favicon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2216%22%20fill%3D%22%233d444d%22%2F%3E%3Ctext%20x%3D%2216%22%20y%3D%2222.5%22%20font-family%3D%22Helvetica%2CArial%2Csans-serif%22%20font-size%3D%2217%22%20font-weight%3D%22700%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%3EKV%3C%2Ftext%3E%3C%2Fsvg%3E" />
 <style>
   :root {
     --bg: #0e1116; --panel: #161b22; --line: #262d36;
@@ -266,8 +271,28 @@ function sjekkForeldet(s) {
   overskrift.className = "t-unknown";
 }
 
+/**
+ * Faviconet tar fargen fra tilstanden, så en festet fane sier hvordan det står
+ * til uten at du åpner den. Merket beholdes — skiva skifter farge.
+ *
+ * Fargene leses fra CSS-variablene og skrives IKKE inn på nytt her. Sto de to
+ * steder, ville de før eller siden sagt hver sin ting, og faneikonet ville vist
+ * en annen tilstand enn raden rett under.
+ */
+function settFavicon(tilstand) {
+  const variabel = { up: "--up", degraded: "--degraded", down: "--down" }[tilstand] || "--unknown";
+  const farge = getComputedStyle(document.documentElement).getPropertyValue(variabel).trim();
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">'
+    + `<circle cx="16" cy="16" r="16" fill="${farge}"/>`
+    + '<text x="16" y="22.5" font-family="Helvetica,Arial,sans-serif"'
+    + ' font-size="17" font-weight="700" fill="#fff" text-anchor="middle">KV</text></svg>';
+  document.getElementById("favicon").href = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+
 function tegnStatus(s) {
   const tilstand = s.overall || "unknown";
+  // Settes FØR den tidlige returneringen under — et ikon skal vi ha uansett.
+  settFavicon(tilstand);
   document.getElementById("banner-dot").className = "dot " + tilstand;
   const overskrift = document.getElementById("banner-text");
   overskrift.textContent = ORD[tilstand] || ORD.unknown;
