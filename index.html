@@ -121,7 +121,7 @@
     <div class="scale"><span id="scale-from">90 dager siden</span><span id="scale-uptime"></span><span>i dag</span></div>
   </div>
 
-  <h2>Tjenester</h2>
+  <h2>Tjenester <span class="kilde">tid siden forrige tilstandsendring — ikke tjenestens totale oppetid</span></h2>
   <div class="card" id="targets"><div class="empty">Henter…</div></div>
 
   <h2>Leverandører <span class="kilde">deres egen melding, ikke vår måling · hentet hver halvtime</span></h2>
@@ -196,6 +196,12 @@ function varighet(fra) {
     return rest ? `i ${timer} t ${rest} min` : `i ${timer} t`;
   }
   const dager = Math.floor(timer / 24);
+  const restTimer = timer % 24;
+  // Timene over døgnet tas MED. Uten dem sto «i 4 dager» i nesten to døgn:
+  // 4 d 00 t og 4 d 23 t leste likt, og eieren så «4 dager» på skjermen mens
+  // tallet egentlig var i ferd med å bli 5. Formen matcher «i 5 t 12 min»
+  // over — samme forkortede stil, ett hakk grovere.
+  if (restTimer) return `i ${dager} d ${restTimer} t`;
   return `i ${dager} ${dager === 1 ? "dag" : "dager"}`;
 }
 
