@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-15T06:35:58.225Z",
-  "overall": "degraded",
+  "generatedAt": "2026-09-15T06:42:54.827Z",
+  "overall": "up",
   "targets": {
     "admin": {
       "label": "Administrasjon",
       "detail": "Innlogging, provisjonering og fakturering",
-      "state": "degraded",
-      "misses": 1,
-      "since": "2026-09-15T06:35:58.225Z",
-      "lastOk": "2026-09-15T06:28:54.352Z",
-      "lastCheck": "2026-09-15T06:35:58.225Z",
-      "responseMs": 7253,
-      "reason": "HTTP 520",
+      "state": "up",
+      "misses": 0,
+      "since": "2026-09-15T06:42:54.827Z",
+      "lastOk": "2026-09-15T06:42:54.827Z",
+      "lastCheck": "2026-09-15T06:42:54.827Z",
+      "responseMs": 2982,
+      "reason": null,
       "incidentFrom": null
     },
     "demo": {
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-15T06:35:58.225Z",
-      "lastCheck": "2026-09-15T06:35:58.225Z",
-      "responseMs": 655,
+      "lastOk": "2026-09-15T06:42:54.827Z",
+      "lastCheck": "2026-09-15T06:42:54.827Z",
+      "responseMs": 509,
       "reason": null,
       "incidentFrom": null
     }
