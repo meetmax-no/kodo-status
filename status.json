@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-15T14:28:54.137Z",
-  "overall": "degraded",
+  "generatedAt": "2026-09-15T14:35:59.632Z",
+  "overall": "up",
   "targets": {
     "admin": {
       "label": "Administrasjon",
       "detail": "Innlogging, provisjonering og fakturering",
-      "state": "degraded",
-      "misses": 1,
-      "since": "2026-09-15T14:28:54.137Z",
-      "lastOk": "2026-09-15T14:21:54.348Z",
-      "lastCheck": "2026-09-15T14:28:54.137Z",
-      "responseMs": 15000,
-      "reason": "tidsavbrudd etter 15000 ms",
+      "state": "up",
+      "misses": 0,
+      "since": "2026-09-15T14:35:59.632Z",
+      "lastOk": "2026-09-15T14:35:59.632Z",
+      "lastCheck": "2026-09-15T14:35:59.632Z",
+      "responseMs": 3489,
+      "reason": null,
       "incidentFrom": null
     },
     "demo": {
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-15T14:28:54.137Z",
-      "lastCheck": "2026-09-15T14:28:54.137Z",
-      "responseMs": 597,
+      "lastOk": "2026-09-15T14:35:59.632Z",
+      "lastCheck": "2026-09-15T14:35:59.632Z",
+      "responseMs": 475,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-15T14:00:58.625Z",
+      "hentet": "2026-09-15T14:36:00.211Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-15T14:00:58.723Z",
+      "hentet": "2026-09-15T14:36:00.509Z",
       "feil": null
     },
     {
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
       "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-09-15T14:00:58.659Z",
+      "hentet": "2026-09-15T14:36:00.873Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-15T14:00:58.411Z",
+      "hentet": "2026-09-15T14:36:00.015Z",
       "feil": null
     }
   ]
