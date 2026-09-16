@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T11:01:00.433Z",
+  "generatedAt": "2026-09-16T11:07:55.729Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-15T14:56:54.126Z",
-      "lastOk": "2026-09-16T11:01:00.433Z",
-      "lastCheck": "2026-09-16T11:01:00.433Z",
-      "responseMs": 631,
+      "lastOk": "2026-09-16T11:07:55.729Z",
+      "lastCheck": "2026-09-16T11:07:55.729Z",
+      "responseMs": 383,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-16T11:01:00.433Z",
-      "lastCheck": "2026-09-16T11:01:00.433Z",
-      "responseMs": 447,
+      "lastOk": "2026-09-16T11:07:55.729Z",
+      "lastCheck": "2026-09-16T11:07:55.729Z",
+      "responseMs": 626,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-16T10:35:59.683Z",
+      "hentet": "2026-09-16T11:07:56.756Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-16T10:35:59.711Z",
+      "hentet": "2026-09-16T11:07:56.795Z",
       "feil": null
     },
     {
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
       "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-09-16T10:35:59.345Z",
+      "hentet": "2026-09-16T11:07:57.167Z",
       "feil": null
     },
     {
@@ -60,8 +60,8 @@
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
       "indikator": "minor",
-      "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-09-16T10:35:59.108Z",
+      "beskrivelse": "Partially Degraded Service",
+      "hentet": "2026-09-16T11:07:56.313Z",
       "feil": null
     }
   ]
