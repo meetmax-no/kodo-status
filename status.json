@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T12:07:54.120Z",
+  "generatedAt": "2026-09-16T12:14:53.541Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-15T14:56:54.126Z",
-      "lastOk": "2026-09-16T12:07:54.120Z",
-      "lastCheck": "2026-09-16T12:07:54.120Z",
-      "responseMs": 648,
+      "lastOk": "2026-09-16T12:14:53.541Z",
+      "lastCheck": "2026-09-16T12:14:53.541Z",
+      "responseMs": 373,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-16T12:07:54.120Z",
-      "lastCheck": "2026-09-16T12:07:54.120Z",
-      "responseMs": 389,
+      "lastOk": "2026-09-16T12:14:53.541Z",
+      "lastCheck": "2026-09-16T12:14:53.541Z",
+      "responseMs": 659,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-16T11:42:54.434Z",
+      "hentet": "2026-09-16T12:14:54.209Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-16T11:42:54.629Z",
+      "hentet": "2026-09-16T12:14:54.365Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
       "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-09-16T11:42:55.132Z",
+      "hentet": "2026-09-16T12:14:54.838Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "minor",
-      "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-09-16T11:42:54.146Z",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "hentet": "2026-09-16T12:14:53.905Z",
       "feil": null
     }
   ]
