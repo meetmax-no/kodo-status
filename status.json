@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T17:21:32.034Z",
+  "generatedAt": "2026-09-24T17:28:32.027Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-15T14:56:54.126Z",
-      "lastOk": "2026-09-24T17:21:32.034Z",
-      "lastCheck": "2026-09-24T17:21:32.034Z",
-      "responseMs": 481,
+      "lastOk": "2026-09-24T17:28:32.027Z",
+      "lastCheck": "2026-09-24T17:28:32.027Z",
+      "responseMs": 622,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-09-24T17:21:32.034Z",
-      "lastCheck": "2026-09-24T17:21:32.034Z",
-      "responseMs": 279,
+      "lastOk": "2026-09-24T17:28:32.027Z",
+      "lastCheck": "2026-09-24T17:28:32.027Z",
+      "responseMs": 630,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-24T16:56:32.680Z",
+      "hentet": "2026-09-24T17:28:32.609Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-24T16:56:32.701Z",
+      "hentet": "2026-09-24T17:28:32.771Z",
       "feil": null
     },
     {
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
       "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-09-24T16:56:32.660Z",
+      "hentet": "2026-09-24T17:28:33.269Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-09-24T16:56:32.460Z",
+      "hentet": "2026-09-24T17:28:32.382Z",
       "feil": null
     }
   ]
