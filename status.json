@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T21:56:38.793Z",
+  "generatedAt": "2026-10-03T22:07:39.496Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -7,10 +7,10 @@
       "detail": "Innlogging, provisjonering og fakturering",
       "state": "up",
       "misses": 0,
-      "since": "2026-09-15T14:56:54.126Z",
-      "lastOk": "2026-10-03T21:56:38.793Z",
-      "lastCheck": "2026-10-03T21:56:38.793Z",
-      "responseMs": 630,
+      "since": "2026-10-03T22:07:39.496Z",
+      "lastOk": "2026-10-03T22:07:39.496Z",
+      "lastCheck": "2026-10-03T22:07:39.496Z",
+      "responseMs": 613,
       "reason": null,
       "incidentFrom": null
     },
@@ -19,10 +19,10 @@
       "detail": "Representativ kundeinstallasjon (demo)",
       "state": "up",
       "misses": 0,
-      "since": "2026-09-09T18:36:58.054Z",
-      "lastOk": "2026-10-03T21:56:38.793Z",
-      "lastCheck": "2026-10-03T21:56:38.793Z",
-      "responseMs": 615,
+      "since": "2026-10-03T22:07:39.496Z",
+      "lastOk": "2026-10-03T22:07:39.496Z",
+      "lastCheck": "2026-10-03T22:07:39.496Z",
+      "responseMs": 442,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-03T21:28:42.410Z",
+      "hentet": "2026-10-03T22:09:44.970Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-03T21:28:42.715Z",
+      "hentet": "2026-10-03T22:09:45.019Z",
       "feil": null
     },
     {
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
       "beskrivelse": "Minor Service Outage",
-      "hentet": "2026-10-03T21:28:43.074Z",
+      "hentet": "2026-10-03T22:09:44.809Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-03T21:28:42.124Z",
+      "hentet": "2026-10-03T22:09:44.576Z",
       "feil": null
     }
   ]
