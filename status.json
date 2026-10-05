@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T21:14:38.037Z",
+  "generatedAt": "2026-10-05T21:21:38.038Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-05T21:14:38.037Z",
-      "lastCheck": "2026-10-05T21:14:38.037Z",
-      "responseMs": 489,
+      "lastOk": "2026-10-05T21:21:38.038Z",
+      "lastCheck": "2026-10-05T21:21:38.038Z",
+      "responseMs": 826,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-05T21:14:38.037Z",
-      "lastCheck": "2026-10-05T21:14:38.037Z",
-      "responseMs": 532,
+      "lastOk": "2026-10-05T21:21:38.038Z",
+      "lastCheck": "2026-10-05T21:21:38.038Z",
+      "responseMs": 889,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-05T20:49:38.739Z",
+      "hentet": "2026-10-05T21:21:38.636Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-05T20:49:38.872Z",
+      "hentet": "2026-10-05T21:21:38.777Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-05T20:49:39.538Z",
+      "hentet": "2026-10-05T21:21:39.092Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "minor",
-      "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-10-05T20:49:38.379Z",
+      "indikator": "major",
+      "beskrivelse": "Partial System Outage",
+      "hentet": "2026-10-05T21:21:38.382Z",
       "feil": null
     }
   ]
