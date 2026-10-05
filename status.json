@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T22:56:38.039Z",
+  "generatedAt": "2026-10-05T23:01:09.112Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-05T22:56:38.039Z",
-      "lastCheck": "2026-10-05T22:56:38.039Z",
-      "responseMs": 826,
+      "lastOk": "2026-10-05T23:01:09.112Z",
+      "lastCheck": "2026-10-05T23:01:09.112Z",
+      "responseMs": 558,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-05T22:56:38.039Z",
-      "lastCheck": "2026-10-05T22:56:38.039Z",
-      "responseMs": 830,
+      "lastOk": "2026-10-05T23:01:09.112Z",
+      "lastCheck": "2026-10-05T23:01:09.112Z",
+      "responseMs": 1129,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-05T22:28:38.643Z",
+      "hentet": "2026-10-05T23:01:09.757Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-05T22:28:38.697Z",
+      "hentet": "2026-10-05T23:01:09.730Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-05T22:28:39.617Z",
+      "hentet": "2026-10-05T23:01:10.743Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "minor",
-      "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-10-05T22:28:38.383Z",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "hentet": "2026-10-05T23:01:09.442Z",
       "feil": null
     }
   ]
