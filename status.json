@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T21:07:38.046Z",
+  "generatedAt": "2026-10-06T21:14:38.102Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-06T21:07:38.046Z",
-      "lastCheck": "2026-10-06T21:07:38.046Z",
-      "responseMs": 538,
+      "lastOk": "2026-10-06T21:14:38.102Z",
+      "lastCheck": "2026-10-06T21:14:38.102Z",
+      "responseMs": 812,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-06T21:07:38.046Z",
-      "lastCheck": "2026-10-06T21:07:38.046Z",
-      "responseMs": 840,
+      "lastOk": "2026-10-06T21:14:38.102Z",
+      "lastCheck": "2026-10-06T21:14:38.102Z",
+      "responseMs": 529,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,17 +34,17 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-06T20:42:38.662Z",
+      "hentet": "2026-10-06T21:14:38.803Z",
       "feil": null
     },
     {
       "navn": "Upstash",
       "rolle": "databasene",
       "vert": "https://status.upstash.com",
-      "indikator": null,
-      "beskrivelse": null,
-      "hentet": "2026-10-06T20:42:44.418Z",
-      "feil": "tidsavbrudd"
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "hentet": "2026-10-06T21:14:38.815Z",
+      "feil": null
     },
     {
       "navn": "Cloudflare",
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-06T20:42:38.953Z",
+      "hentet": "2026-10-06T21:14:39.037Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-06T20:42:38.436Z",
+      "hentet": "2026-10-06T21:14:38.513Z",
       "feil": null
     }
   ]
