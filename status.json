@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T15:28:38.034Z",
+  "generatedAt": "2026-10-07T15:35:40.513Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-07T15:28:38.034Z",
-      "lastCheck": "2026-10-07T15:28:38.034Z",
-      "responseMs": 823,
+      "lastOk": "2026-10-07T15:35:40.513Z",
+      "lastCheck": "2026-10-07T15:35:40.513Z",
+      "responseMs": 537,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-03T22:07:39.496Z",
-      "lastOk": "2026-10-07T15:28:38.034Z",
-      "lastCheck": "2026-10-07T15:28:38.034Z",
-      "responseMs": 859,
+      "lastOk": "2026-10-07T15:35:40.513Z",
+      "lastCheck": "2026-10-07T15:35:40.513Z",
+      "responseMs": 498,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,17 +34,17 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-07T15:01:02.340Z",
+      "hentet": "2026-10-07T15:35:41.202Z",
       "feil": null
     },
     {
       "navn": "Upstash",
       "rolle": "databasene",
       "vert": "https://status.upstash.com",
-      "indikator": "none",
-      "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-07T15:01:02.408Z",
-      "feil": null
+      "indikator": null,
+      "beskrivelse": null,
+      "hentet": "2026-10-07T15:35:46.824Z",
+      "feil": "tidsavbrudd"
     },
     {
       "navn": "Cloudflare",
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-07T15:01:02.608Z",
+      "hentet": "2026-10-07T15:35:42.073Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "none",
-      "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-07T15:01:02.089Z",
+      "indikator": "minor",
+      "beskrivelse": "Partially Degraded Service",
+      "hentet": "2026-10-07T15:35:40.844Z",
       "feil": null
     }
   ]
