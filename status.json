@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21T15:49:22.199Z",
+  "generatedAt": "2026-10-21T15:56:22.220Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-10-21T15:49:22.199Z",
-      "lastCheck": "2026-10-21T15:49:22.199Z",
-      "responseMs": 684,
+      "lastOk": "2026-10-21T15:56:22.220Z",
+      "lastCheck": "2026-10-21T15:56:22.220Z",
+      "responseMs": 440,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-10-21T15:49:22.199Z",
-      "lastCheck": "2026-10-21T15:49:22.199Z",
-      "responseMs": 517,
+      "lastOk": "2026-10-21T15:56:22.220Z",
+      "lastCheck": "2026-10-21T15:56:22.220Z",
+      "responseMs": 663,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,17 +34,17 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-21T15:21:23.016Z",
+      "hentet": "2026-10-21T15:56:22.729Z",
       "feil": null
     },
     {
       "navn": "Upstash",
       "rolle": "databasene",
       "vert": "https://status.upstash.com",
-      "indikator": "none",
-      "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-21T15:21:23.254Z",
-      "feil": null
+      "indikator": null,
+      "beskrivelse": null,
+      "hentet": "2026-10-21T15:56:28.570Z",
+      "feil": "tidsavbrudd"
     },
     {
       "navn": "Cloudflare",
@@ -52,7 +52,7 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-21T15:21:23.714Z",
+      "hentet": "2026-10-21T15:56:23.481Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "minor",
       "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-10-21T15:21:22.907Z",
+      "hentet": "2026-10-21T15:56:22.658Z",
       "feil": null
     }
   ]
