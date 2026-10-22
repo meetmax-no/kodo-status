@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T14:35:22.292Z",
+  "generatedAt": "2026-10-22T14:42:22.177Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-10-22T14:35:22.292Z",
-      "lastCheck": "2026-10-22T14:35:22.292Z",
-      "responseMs": 390,
+      "lastOk": "2026-10-22T14:42:22.177Z",
+      "lastCheck": "2026-10-22T14:42:22.177Z",
+      "responseMs": 674,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-10-22T14:35:22.292Z",
-      "lastCheck": "2026-10-22T14:35:22.292Z",
-      "responseMs": 685,
+      "lastOk": "2026-10-22T14:42:22.177Z",
+      "lastCheck": "2026-10-22T14:42:22.177Z",
+      "responseMs": 341,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-22T14:07:23.097Z",
+      "hentet": "2026-10-22T14:42:22.816Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-22T14:07:23.204Z",
+      "hentet": "2026-10-22T14:42:23.204Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-10-22T14:07:22.857Z",
+      "hentet": "2026-10-22T14:42:23.568Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "none",
-      "beskrivelse": "All Systems Operational",
-      "hentet": "2026-10-22T14:07:22.754Z",
+      "indikator": "minor",
+      "beskrivelse": "Partially Degraded Service",
+      "hentet": "2026-10-22T14:42:22.610Z",
       "feil": null
     }
   ]
