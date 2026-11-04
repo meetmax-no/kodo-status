@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T17:35:39.241Z",
+  "generatedAt": "2026-11-04T17:42:39.219Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-04T17:35:39.241Z",
-      "lastCheck": "2026-11-04T17:35:39.241Z",
-      "responseMs": 728,
+      "lastOk": "2026-11-04T17:42:39.219Z",
+      "lastCheck": "2026-11-04T17:42:39.219Z",
+      "responseMs": 530,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-04T17:35:39.241Z",
-      "lastCheck": "2026-11-04T17:35:39.241Z",
-      "responseMs": 701,
+      "lastOk": "2026-11-04T17:42:39.219Z",
+      "lastCheck": "2026-11-04T17:42:39.219Z",
+      "responseMs": 1024,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-04T17:07:40.374Z",
+      "hentet": "2026-11-04T17:42:39.920Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-04T17:07:40.522Z",
+      "hentet": "2026-11-04T17:42:39.971Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-11-04T17:07:40.995Z",
+      "hentet": "2026-11-04T17:42:40.475Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "none",
-      "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-04T17:07:40.107Z",
+      "indikator": "minor",
+      "beskrivelse": "Minor Service Outage",
+      "hentet": "2026-11-04T17:42:39.672Z",
       "feil": null
     }
   ]
