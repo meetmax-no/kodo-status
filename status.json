@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T18:49:54.127Z",
+  "generatedAt": "2026-11-09T18:56:54.168Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-09T18:49:54.127Z",
-      "lastCheck": "2026-11-09T18:49:54.127Z",
-      "responseMs": 196,
+      "lastOk": "2026-11-09T18:56:54.168Z",
+      "lastCheck": "2026-11-09T18:56:54.168Z",
+      "responseMs": 208,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-09T18:49:54.127Z",
-      "lastCheck": "2026-11-09T18:49:54.127Z",
-      "responseMs": 231,
+      "lastOk": "2026-11-09T18:56:54.168Z",
+      "lastCheck": "2026-11-09T18:56:54.168Z",
+      "responseMs": 365,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-09T18:21:54.663Z",
+      "hentet": "2026-11-09T18:56:54.585Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-09T18:21:54.894Z",
+      "hentet": "2026-11-09T18:56:54.928Z",
       "feil": null
     },
     {
@@ -52,16 +52,16 @@
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "major",
       "beskrivelse": "Partial System Outage",
-      "hentet": "2026-11-09T18:21:54.515Z",
+      "hentet": "2026-11-09T18:56:54.537Z",
       "feil": null
     },
     {
       "navn": "GitHub",
       "rolle": "denne siden",
       "vert": "https://www.githubstatus.com",
-      "indikator": "major",
-      "beskrivelse": "Partial System Outage",
-      "hentet": "2026-11-09T18:21:54.513Z",
+      "indikator": "none",
+      "beskrivelse": "All Systems Operational",
+      "hentet": "2026-11-09T18:56:54.520Z",
       "feil": null
     }
   ]
