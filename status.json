@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T08:00:57.492Z",
+  "generatedAt": "2026-11-11T08:07:57.481Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-11T08:00:57.492Z",
-      "lastCheck": "2026-11-11T08:00:57.492Z",
-      "responseMs": 699,
+      "lastOk": "2026-11-11T08:07:57.481Z",
+      "lastCheck": "2026-11-11T08:07:57.481Z",
+      "responseMs": 283,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-11T08:00:57.492Z",
-      "lastCheck": "2026-11-11T08:00:57.492Z",
-      "responseMs": 653,
+      "lastOk": "2026-11-11T08:07:57.481Z",
+      "lastCheck": "2026-11-11T08:07:57.481Z",
+      "responseMs": 294,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-11T07:35:57.768Z",
+      "hentet": "2026-11-11T08:07:57.892Z",
       "feil": null
     },
     {
@@ -43,16 +43,16 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-11T07:35:57.866Z",
+      "hentet": "2026-11-11T08:07:57.986Z",
       "feil": null
     },
     {
       "navn": "Cloudflare",
       "rolle": "vakten",
       "vert": "https://www.cloudflarestatus.com",
-      "indikator": "minor",
-      "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-11-11T07:35:57.811Z",
+      "indikator": "major",
+      "beskrivelse": "Partial System Outage",
+      "hentet": "2026-11-11T08:07:57.797Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-11T07:35:57.738Z",
+      "hentet": "2026-11-11T08:07:57.730Z",
       "feil": null
     }
   ]
