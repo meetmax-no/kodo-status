@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-24T11:35:36.099Z",
+  "generatedAt": "2026-11-24T11:42:36.088Z",
   "overall": "up",
   "targets": {
     "admin": {
@@ -8,9 +8,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-24T11:35:36.099Z",
-      "lastCheck": "2026-11-24T11:35:36.099Z",
-      "responseMs": 422,
+      "lastOk": "2026-11-24T11:42:36.088Z",
+      "lastCheck": "2026-11-24T11:42:36.088Z",
+      "responseMs": 939,
       "reason": null,
       "incidentFrom": null
     },
@@ -20,9 +20,9 @@
       "state": "up",
       "misses": 0,
       "since": "2026-10-18T14:00:47.753Z",
-      "lastOk": "2026-11-24T11:35:36.099Z",
-      "lastCheck": "2026-11-24T11:35:36.099Z",
-      "responseMs": 603,
+      "lastOk": "2026-11-24T11:42:36.088Z",
+      "lastCheck": "2026-11-24T11:42:36.088Z",
+      "responseMs": 812,
       "reason": null,
       "incidentFrom": null
     }
@@ -34,7 +34,7 @@
       "vert": "https://www.vercel-status.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-24T11:07:36.782Z",
+      "hentet": "2026-11-24T11:42:37.135Z",
       "feil": null
     },
     {
@@ -43,7 +43,7 @@
       "vert": "https://status.upstash.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-24T11:07:36.760Z",
+      "hentet": "2026-11-24T11:42:37.193Z",
       "feil": null
     },
     {
@@ -51,8 +51,8 @@
       "rolle": "vakten",
       "vert": "https://www.cloudflarestatus.com",
       "indikator": "minor",
-      "beskrivelse": "Partially Degraded Service",
-      "hentet": "2026-11-24T11:07:36.907Z",
+      "beskrivelse": "Minor Service Outage",
+      "hentet": "2026-11-24T11:42:37.299Z",
       "feil": null
     },
     {
@@ -61,7 +61,7 @@
       "vert": "https://www.githubstatus.com",
       "indikator": "none",
       "beskrivelse": "All Systems Operational",
-      "hentet": "2026-11-24T11:07:36.505Z",
+      "hentet": "2026-11-24T11:42:36.934Z",
       "feil": null
     }
   ]
